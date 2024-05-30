@@ -12,21 +12,21 @@ const $ = new Env("zippo");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1
 const debug = 0
+const axios = require("axios");
 let ckStr = ($.isNode() ? process.env.zippo : $.getdata('zippo')) || '';  //检测CK  外部
 let msg, ck;
 let host = 'wx-center.zippo.com.cn';
 let hostname = 'https://' + host;
-let scriptVersionNow = "1.0.0";
+let scriptVersionNow = "1.0.1";
 //---------------------------------------------------//
 async function tips(ckArr) {
     //DoubleLog(`当前脚本版本${Version}\n📌,如果脚本版本不一致请及时更新`);
-    console.log("仅完成积分签到");
+    console.log("完成积分签到与收藏任务");
     DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
     debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
 !(async () => {
     let ckArr = await checkEnv(ckStr, "zippo");  //检查CK
-    
     await getNotice();  //远程通知
     await getVersion("yang7758258/ohhh154@main/zippo会员签到.js");
     await tips(ckArr);  //脚本提示
@@ -52,19 +52,11 @@ async function newstart(name, taskname, time) {  //任务名 函数名 等待时
 //-------------------------------------------------------------------------------封装循环测试
 
 async function start() {
-    //console.log("\n📌📌📌📌📌📌📌📌执行任务1📌📌📌📌📌📌📌📌");
-    //for (i = 0; i < ckArr.length; i++) {
-    //    ck = ckArr[i].split("&");                 //单账号多变量分割符,如果一个账号需要user和token两个变量,那么则输入user1&token1@user2&token2...   
-    //    let CK = ckArr[i]
-    //    await userinfo();
-    //    await $.wait(2 * 1000);
-    //}
-    
-    await newstart("登录/CK检测", userinfo, 1)
-    await newstart("签到", dailySign, 1)
-    await newstart("积分查询", jifen, 1)
-    
-
+    await newstart("登录/CK检测", userinfo, 1);
+    await newstart("开始签到", dailySign, 1);
+    await newstart("开始收藏任务", shoucang, 1);
+    await newstart("开始领取", lingjiang, 1);
+    await newstart("当前积分查询", jifen, 1);
 }
 
 
@@ -186,74 +178,89 @@ async function dailySign() {
         
     } catch (error) {
         //console.log(error);
-        console.log("服务器卡爆啦");
+        console.log("好像出了点小问题");
     }
 
 }
+//用户收藏任务 POST
+async function shoucang() {
+    try {
+        let host = 'wx-center.zippo.com.cn';
+        let hostname = 'https://' + host;
+        let url = `${hostname}/api/favorites`
+        let body = {
+                    "targetType": "sku",
+                    "targetId": "265",
+                    "favorited": true
+    }
+        
+        const  result = await axios.post(url, body, {
+        headers: {
+            'x-app-id': 'zippo',
+            'x-platform-id': 'wxaa75ffd8c2d75da7',
+            'x-platform-env': 'release',
+            'x-platform': 'wxmp',
+            'authorization': ck[0],
+            'xweb_xhr': '1',
+            'sec-fetch-site': 'cross-site',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://servicewechat.com/wxaa75ffd8c2d75da7/76/page-frame.html',
+            'accept-language': 'zh-CN,zh;q=0.9',
+        }
+    })   
+        const r = result.data;
+        //console.log(result);
+        if (r?.favorited == true) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `任务成功,id编号:${result.data.targetId}🎉`);
+            await wait(2);
+        }if (r?.code == 400) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `任务失败:${result.data.message}`);
+        }
+    }catch (error) {
+        //console.log(error);
+        console.log("好像出了点小问题");
+    }
+}
 
-
-
-
-
-
-//用户分享 POST
-async function share() {
+//用户领奖 POST
+async function lingjiang() {
     try {
         let url = {
-            url: `${hostname}/crm/public/index.php/api/v1/recordScoreShare`,
+            url: `${hostname}/api/missions/5/rewards`,
             headers: {
-                "Host": host,
-                "token": ck[0],
-                "Content-Length": 57,  //如果没有 length  则判定为  点开自己的分享链接
-                "Content-Type": "application/x-www-form-urlencoded"
-
+                'x-app-id': 'zippo',
+                'x-platform-id': 'wxaa75ffd8c2d75da7',
+                'x-platform-env': 'release',
+                'x-platform': 'wxmp',
+                'authorization': ck[0],
+                'xweb_xhr': 1,
+                'sec-fetch-site': 'cross-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'referer': 'https://servicewechat.com/wxaa75ffd8c2d75da7/76/page-frame.html',
+                'accept-language': 'zh-CN,zh;q=0.9',
             },
-            body: "invite_id=" + ck[0] + "&cookbook_id=20"
-
+            body: JSON.stringify({"id":5}),
         };
-        let result = await httpPost(url, `分享`);
+        let result = await httpPost(url, `领取奖励`);
 
         //console.log(result);
-        if (result?.error_code == 0) {
-            DoubleLog(`账号[` + Number(i + 1) + `]` + `执行分享成功:${result.msg}🎉`);
+        if (result?.rewardValue == 5) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `领取成功,获得积分💰:${result.rewardValue}🎉`);
             await wait(2);
-        } else {
-            DoubleLog(`账号[` + Number(i + 1) + `]` + `执行分享失败${result.msg}`);
-            //console.log(result);
+        } if (result?.code == 400) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `领取失败:${result.message}`);
         }
+        
+           
+        
     } catch (error) {
         //console.log(error);
-        console.log("服务器卡爆啦");
+        console.log("好像出了点小问题");
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -427,24 +434,27 @@ async function httpPost(postUrlObject, tip, timeout = 3) {
 /**
  * 网络请求 (get, post等)
  */
-function httpRequest(options, method = null) {
+function httpRequest(options, timeout = 1 * 1000) {
     method = options.method ? options.method.toLowerCase() : options.body ? "post" : "get";
-    return new Promise((resolve) => {
-        $[method](options, (err, resp, data) => {
-            if (err) {
-                console.log(`${method}请求失败`);
-                $.logErr(err);
-            } else {
-                if (data) {
-                    try { data = JSON.parse(data); } catch (error) { }
+    return new Promise(resolve => {
+        setTimeout(() => {
+            $[method](options, (err, resp, data) => {
+                try {
+                    if (err) {
+                        console.log(JSON.stringify(err));
+                        $.logErr(err);
+                    } else {
+                        try { data = JSON.parse(data); } catch (error) { }
+                    }
+                } catch (e) {
+                    console.log(e);
+                    $.logErr(e, resp);
+                } finally {
                     resolve(data);
-                } else {
-                    console.log(`请求api返回数据为空，请检查自身原因`);
                 }
-            }
-            resolve();
-        });
-    });
+            })
+        }, timeout)
+    })
 }
 
 
