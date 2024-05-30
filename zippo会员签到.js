@@ -29,7 +29,7 @@ async function tips(ckArr) {
     
     await tips(ckArr);  //脚本提示
     await start();      //开始任务
-    await getVersion("smallfawn/QLScriptPublic@main/ysfqd.js");
+    await getVersion("yang7758258/ohhh154@main/zippo会员签到.js");
     await getNotice();  //远程通知
     await SendMsg(msg); //发送通知
 
