@@ -17,7 +17,7 @@ let ckStr = ($.isNode() ? process.env.zippo : $.getdata('zippo')) || '';  //检�
 let msg, ck;
 let host = 'wx-center.zippo.com.cn';
 let hostname = 'https://' + host;
-let scriptVersionNow = "1.0.3";
+let scriptVersionNow = "1.0.4";
 //---------------------------------------------------//
 async function tips(ckArr) {
     //DoubleLog(`当前脚本版本${Version}\n📌,如果脚本版本不一致请及时更新`);
