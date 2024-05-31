@@ -54,8 +54,9 @@ async function newstart(name, taskname, time) {  //任务名 函数名 等待时
 async function start() {
     await newstart("登录/CK检测", userinfo, 1);
     await newstart("开始签到", dailySign, 1);
-    await newstart("开始收藏任务", shoucang, 1);
-    await newstart("开始领取", lingjiang, 1);
+    await newstart("取消收藏", shoucang1, 1);
+    await newstart("收藏", shoucang, 1);
+    await newstart("开始领取每日收藏奖励", lingjiang, 1);
     await newstart("当前积分查询", jifen, 1);
 }
 
@@ -168,7 +169,7 @@ async function dailySign() {
 
         //console.log(result);
         if (result?.code != 'already_signed') {
-            DoubleLog(`账号[` + Number(i + 1) + `]` + `签到成功,获得积分:${result.count}🎉`);
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `签到成功🎉`);
             await wait(2);
         } if (result?.code == 'already_signed') {
             DoubleLog(`账号[` + Number(i + 1) + `]` + `签到失败:${result.message}`);
@@ -182,6 +183,47 @@ async function dailySign() {
     }
 
 }
+//用户收藏任务 POST
+async function shoucang1() {
+    try {
+        let host = 'wx-center.zippo.com.cn';
+        let hostname = 'https://' + host;
+        let url = `${hostname}/api/favorites`
+        let body = {
+                    "targetType": "sku",
+                    "targetId": "265",
+                    "favorited": false
+    }
+        
+        const  result = await axios.post(url, body, {
+        headers: {
+            'x-app-id': 'zippo',
+            'x-platform-id': 'wxaa75ffd8c2d75da7',
+            'x-platform-env': 'release',
+            'x-platform': 'wxmp',
+            'authorization': ck[0],
+            'xweb_xhr': '1',
+            'sec-fetch-site': 'cross-site',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://servicewechat.com/wxaa75ffd8c2d75da7/76/page-frame.html',
+            'accept-language': 'zh-CN,zh;q=0.9',
+        }
+    })   
+        const r = result.data;
+        //console.log(result);
+        if (r?.favorited == true) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `任务成功,id编号:${result.data.targetId}🎉`);
+            await wait(2);
+        }if (r?.code == 400) {
+            DoubleLog(`账号[` + Number(i + 1) + `]` + `任务失败:${result.data.message}`);
+        }
+    }catch (error) {
+        //console.log(error);
+        console.log("好像出了点小问题");
+    }
+}
+
 //用户收藏任务 POST
 async function shoucang() {
     try {
