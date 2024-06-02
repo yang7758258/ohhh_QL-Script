@@ -5,7 +5,7 @@
  *Date: 2024-06-02
  * cron 0 6,18 * * *  好奇车生活.js         
  * 微信小程序 好奇车生活 ck有效期不清楚   完成签到 抽奖 日常任务 新手任务
- * 抓域名wx.17u.cn/下 accountId
+ * 抓域名https://channel.cheryfs.cn/下 accountId
  * export hqcsh= accountId 多账号换行或者#分隔
  */
 // ============================================================================================================
@@ -16,7 +16,7 @@ const env_name = 'hqcsh' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.0";//脚本版本号
+let scriptVersionNow = "1.0.1";//脚本版本号
 let msg = "";
 //let host = 'channel.cheryfs.cn';//用got时注释
 //let hostname = 'https://' + host;
@@ -70,11 +70,11 @@ async function main() {
 // ======================================开始任务===================================================================================
 async function userTask(user) {
     //任务逻辑都放这里了, 与脚本入口分开, 方便分类控制并模块化
-    console.log(`\n================== 账号[${user.index}]开始任务 ==================`)
+    console.log(`\n============= 账号[${user.index}]开始任务 =============`)
     //debugLog(`【debug】 这是你的账号数组:\n ${user}`);
     await SignTask(user)
-    await wait(2)
-    await drawTask(user)
+    //await wait(2)
+    //await drawTask(user)
     await wait(2)
     await missonTask(user,id)
     await wait(2)
@@ -124,7 +124,7 @@ async function SignTask(user) {
         // ?.语法: 前面的结果为null/undefined的时候不再执行后面操作, 可以简单的防止出错
         if (result?.code == 200) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊今日签到状态为:[${result.result.message}]🎉`);
+            DoubleLog(`🌸账号[${user.index}]` + `🕊今日签到状态为:[${result.message}]🎉`);
         } else {
             //打印请求错误信息
             DoubleLog(`🌸账号[${user.index}]签到失败,可能是CK失效!`)
@@ -137,14 +137,14 @@ async function SignTask(user) {
 // ============================================================================================
 //存放任务taskid
 const taskId = [
-    "1685608662816",//逛好物
-    "1685608610288",//维修保养
-    "1685608427203",//本地车服
-    "1685608550145",//选二手车
-    "1685608539481",//选新车
-    "1685608529139",//汽车回收
-    "1685608598117",//附近加油站
-    "1685608631506"//违章
+    "662805299354165248",//逛好物
+    "662805189626974208",//维修保养
+    "662793252641984512",//本地车服
+    "662794321581330432",//选二手车
+    "662794237938524160",//选新车
+    "662794135429734400",//汽车回收
+    "662805119309467648",//附近加油站
+    "662805251388100608"//违章
   ];
 const id  = taskId[0]
 const id1 = taskId[1]
@@ -172,10 +172,10 @@ async function drawTask(user) {
             //form: {"isReward":false} Got
         };
         const { statusCode, headers, result } = await request(urlObject)
-        //console.log(statusCode, headers, result);
+        console.log(statusCode, headers, result);
         //解构返回
         if (result?.code == 200) {
-            DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.result.message}]🎉`)
+            DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.message}]🎉`)
         } else {
             //打印请求错误信息
             DoubleLog(`🌸账号[${user.index}]抽奖失败`)
@@ -192,7 +192,7 @@ async function missonTask(user,taskid) {
         let urlObject = {
             method: 'get',
             fn: 'missonTask',
-            url: `https://channel.cheryfs.cn/archer/activity-api/common/doClick?api=inndooImage${taskid}`,
+            url: `https://channel.cheryfs.cn/archer/activity-api/taskItem/achieve?taskItemId=${taskid}`,
             headers: {
                 "tenantId": "619669306447261696",
                 "activityId": "661720946758930433",
@@ -218,7 +218,7 @@ async function missonTask(user,taskid) {
         console.log(e)
     }
 }
-//任务接口
+//查询接口
 async function jifen(user) {
     try {
         let urlObject = {
