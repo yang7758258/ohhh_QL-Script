@@ -16,7 +16,7 @@ const env_name = 'htmwg' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.0";//脚本版本号
+let scriptVersionNow = "1.0.1";//脚本版本号
 let msg = "";
 // ==================================异步顺序==============================================================================
 !(async () => {
@@ -118,7 +118,7 @@ async function SignTask(user) {
         let result = await httpRequest(urlObject)
         let r = JSON.parse(result)
         //console.log(r);
-        if (r?.activity_code == "202404") {
+        if (r?.activity_code) {
             //打印签到结果
             DoubleLog(`🌸账号[${user.index}]` + `🕊当前用户[${r.member_id}]` + `签到成功,已签到[${r.sign_day_num}]天🎉`);
         }if(r?.code == "1019") {
@@ -151,7 +151,7 @@ async function drawTask(user) {
         const { statusCode, headers, result } = await request(urlObject)
         //console.log(statusCode, headers, result);
         //解构返回
-        if (result?.opporturnity == true) {
+        if (result?.opporturnity) {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖获得:[${result.lucky_record_vo.prize_name}]🎉`)
         } if (result?.code == "1007") {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖失败:[${result.message}]❌`)
@@ -178,7 +178,7 @@ async function jifenduijihui(user) {
         };
         const { statusCode, headers, result } = await request(urlObject)
         //console.log(statusCode, headers, result);
-        if (result?.member_id == true) {
+        if (result?.opportunity_id) {
             DoubleLog(`🌸账号[${user.index}]积分兑抽奖` + `🕊任务成功，当前机会:[${result.opportunity_num}]🎉`)
         } if (result?.code == "E300"){
             DoubleLog(`🌸账号[${user.index}]🕊积分兑抽奖 兑换失败:[${result.message}]❌`)
@@ -204,7 +204,7 @@ async function lingjihuijihui(user) {
         };
         const { statusCode, headers, result } = await request(urlObject)
         //console.log(statusCode, headers, result);
-        if (result?.code != "700") {
+        if (result) {
             DoubleLog(`🌸账号[${user.index}]🕊每日领机会 领取成功🎉`)
         } if (result?.code == "700"){
             DoubleLog(`🌸账号[${user.index}]🕊每日领机会 失败:[${result.message}]❌`)
