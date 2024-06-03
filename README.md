@@ -1,8 +1,8 @@
 ### Script Overview
 |   Application          |                                    Script name                                           |   Available   | Maintenance |
 |:----------------------:|:----------------------------------------------------------------------------------------:|:-------------:|:-----------:|
-|     zippo签到         | [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo%E4%BC%9A%E5%91%98%E7%AD%BE%E5%88%B0.js) | ✅(2024/05/30) |      ✅     |
-|     好奇车生活        | [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/%E5%A5%BD%E5%A5%87%E8%BD%A6%E7%94%9F%E6%B4%BB.js) | ✅(2024/06/02) |      ✅     |
+|     zippo签到         | [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo.js) | ✅(2024/05/30) |      ✅     |
+|     好奇车生活        | [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/hqcsh.js) | ✅(2024/06/02) |      ✅     |
 
 ------
 ###
