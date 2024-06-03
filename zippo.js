@@ -28,7 +28,7 @@ async function tips(ckArr) {
 !(async () => {
     let ckArr = await checkEnv(ckStr, "zippo");  //检查CK
     await getNotice();  //远程通知
-    await getVersion("yang7758258/ohhh154@main/zippo会员签到.js");
+    await getVersion("yang7758258/ohhh154@main/zippo.js");
     await tips(ckArr);  //脚本提示
     await start();      //开始任务
     await SendMsg(msg); //发送通知
