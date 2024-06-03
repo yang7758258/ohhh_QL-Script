@@ -24,7 +24,7 @@ let msg = "";
 !(async () => {
     await getNotice();  //远程通知
 
-    await getVersion("yang7758258/ohhh154@main/好奇车生活.js");
+    await getVersion("yang7758258/ohhh154@main/hqcsh.js");
     await main();//主函数
     await SendMsg(msg); //发送通知
 
