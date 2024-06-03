@@ -121,7 +121,7 @@ async function SignTask(user) {
             //打印签到结果
             DoubleLog(`🌸账号[${user.index}]` + `🕊当前用户[${r.member_id}]` + `签到成功,已签到[${result.sign_day_num}]天🎉`);
         }if(result?.code == "1019") {
-            DoubleLog(`🌸账号[${user.index}]签到失败:[${r.message}]❌`)
+            DoubleLog(`🌸账号[${user.index}]签到失败:[${result.message}]❌`)
         }else DoubleLog(`🌸账号[${user.index}]签到失败,可能ck失效❌`)
         
     } catch (e) {
