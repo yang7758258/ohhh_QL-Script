@@ -16,7 +16,7 @@ const env_name = 'htmwg' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.1";//脚本版本号
+let scriptVersionNow = "1.0.4";//脚本版本号
 let msg = "";
 // ==================================异步顺序==============================================================================
 !(async () => {
@@ -70,27 +70,22 @@ async function userTask(user) {
     console.log(`\n============= 账号[${user.index}]开始任务 =============`)
     //debugLog(`【debug】 这是你的账号数组:\n ${user}`);
     await SignTask(user)
-    await wait(1)
+    await wait(2)
     await liulanjifen(user)
-    await wait(1)
+    await wait(2)
     await lingjihuijihui(user)
-    await wait(1)
+    await wait(2)
     await jifenduijihui(user)
-    await wait(1)
+    await wait(2)
     await jifenduijihui(user)
-    await wait(1)
+    await wait(2)
     await liulanjihui1(user)
     await drawTask(user)
-    await wait(1)
+    await wait(2)
     await drawTask(user)
-    await wait(1)
+    await wait(2)
     await drawTask(user)
-    await wait(1)
-    await drawTask(user)
-    await wait(1)
-    await drawTask(user)
-    await wait(1)
-    await drawTask(user)
+    await wait(2)
     await jifen(user)
     
     
@@ -115,14 +110,14 @@ async function SignTask(user) {
             body: `{"activity_code":"202404","fill_date":""}`,
         };
 
-        let result = await httpRequest(urlObject)
+        let r = await httpPost(urlObject,`签到`)
         //console.log(r);
-        if ("activity_code"in result) {
+        if (r?.activity_code == 2024) {
             //打印签到结果
             DoubleLog(`🌸账号[${user.index}]` + `🕊当前用户[${r.member_id}]` + `签到成功,已签到[${result.sign_day_num}]天🎉`);
-        }if(result?.code == "1019") {
-            DoubleLog(`🌸账号[${user.index}]签到失败:[${result.message}]❌`)
-        }else DoubleLog(`🌸账号[${user.index}]签到失败,可能ck失效❌`)
+        }if(r?.code == 1019) {
+            DoubleLog(`🌸账号[${user.index}]签到失败:[${r.message}]❌`)
+        }else DoubleLog(`🌸账号[${user.index}]签到失败,可能已经签到❌`)
         
     } catch (e) {
         //打印错误信息
@@ -147,10 +142,10 @@ async function drawTask(user) {
             //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
             //form: {"isReward":false} Got
         };
-        const { statusCode, headers, result } = await request(urlObject)
+        const result  = await httpGet(urlObject,`抽奖`)
         //console.log(statusCode, headers, result);
         //解构返回
-        if (result?.opporturnity) {
+        if  (result && result.hasOwnProperty('lucky_record_vo')) {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖获得:[${result.lucky_record_vo.prize_name}]🎉`)
         } if (result?.code == "1007") {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖失败:[${result.message}]❌`)
@@ -175,9 +170,9 @@ async function jifenduijihui(user) {
             //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
             //form: {"isReward":false} Got
         };
-        const { statusCode, headers, result } = await request(urlObject)
+        const result  = await httpGet(urlObject,`兑机会`)
         //console.log(statusCode, headers, result);
-        if (result?.opportunity_id) {
+        if (result?.member_id) {
             DoubleLog(`🌸账号[${user.index}]积分兑抽奖` + `🕊任务成功，当前机会:[${result.opportunity_num}]🎉`)
         } if (result?.code == "E300"){
             DoubleLog(`🌸账号[${user.index}]🕊积分兑抽奖 兑换失败:[${result.message}]❌`)
@@ -202,7 +197,7 @@ async function lingjihuijihui(user) {
             form: {}
         };
         const { statusCode, headers, result } = await request(urlObject)
-        //console.log(statusCode, headers, result);
+        console.log(statusCode, headers, result);
         if (result) {
             DoubleLog(`🌸账号[${user.index}]🕊每日领机会 领取成功🎉`)
         } if (result?.code == "700"){
@@ -361,6 +356,52 @@ function wait(n) {
 function getTimestamp() {
     return new Date().getTime();
 }
+// ====================================================httpget===========================================
+async function httpGet(getUrlObject, tip, timeout = 3) {
+    return new Promise((resolve) => {
+        let url = getUrlObject;
+        if (!tip) {
+            let tmp = arguments.callee.toString();
+            let re = /function\s*(\w*)/i;
+            let matches = re.exec(tmp);
+            tip = matches[1];
+        }
+        if (debug) {
+            console.log(`\n 【debug】=============== 这是 ${tip} 请求 url ===============`);
+            console.log(url);
+        }
+
+        $.get(
+            url,
+            async (err, resp, data) => {
+                try {
+                    if (debug) {
+                        console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
+                        console.log(data);
+                        console.log(`\n 【debug】=============这是 ${tip} json解析后数据============`);
+                        console.log(JSON.parse(data));
+                    }
+                    let result = JSON.parse(data);
+                    if (result == undefined) {
+                        return;
+                    } else {
+                        resolve(result);
+                    }
+
+                } catch (e) {
+                    //console.log(err, resp);
+                    console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+                    msg = `\n ${tip} 失败了!请稍后尝试!!`
+                    console.log("服务器卡爆啦");
+                } finally {
+                    resolve();
+                }
+            },
+            timeout
+        );
+    });
+}
+
 // ============================================================httppost===============================================
 async function httpPost(postUrlObject, tip, timeout = 3) {
     return new Promise((resolve) => {
