@@ -2,9 +2,9 @@
  *
  *hqcsh
  *Author: Mist
- *Date: 2024-06-02
+ *Date: 2024-06-04
  * cron 0 6,18 * * *  好奇车生活.js         
- * 微信小程序 好奇车生活 ck有效期不清楚   完成签到 抽奖 日常任务 新手任务 
+ * 微信小程序 好奇车生活 ck有效期不清楚   完成签到 抽奖 日常任务 新手任务
  * 抓域名https://channel.cheryfs.cn/下 accountId
  * export hqcsh= accountId 多账号换行或者#分隔
  */
@@ -16,14 +16,13 @@ const env_name = 'hqcsh' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.2";//脚本版本号
+let scriptVersionNow = "1.0.4";//脚本版本号
 let msg = "";
 //let host = 'channel.cheryfs.cn';//用got时注释
 //let hostname = 'https://' + host;
 // ==================================异步顺序==============================================================================
 !(async () => {
     await getNotice();  //远程通知
-
     await getVersion("yang7758258/ohhh154@main/hqcsh.js");
     await main();//主函数
     await SendMsg(msg); //发送通知
@@ -92,6 +91,7 @@ async function userTask(user) {
     await wait(2)
     await missonTask(user,id7)
     await wait(2)
+    await drawTask(user)
     await jifen(user)
     
 }
@@ -161,7 +161,7 @@ async function drawTask(user) {
         let urlObject = {
             method: 'get',
             fn: 'drawTask',
-            url: 'https://channel.cheryfs.cn/archer/activity-api/luckydraw/luckydraw/AE22E8BBFEE84ADE9D4A65FF3C5EB038',
+            url: 'https://channel.cheryfs.cn/archer/activity-api/luckydraw/luckydraw/13E0818B25704A48B98FC09F5BAB7EB7',
             headers: {
                 "tenantId": "619669306447261696",
                 "activityId": "620821692188483585",
@@ -174,7 +174,7 @@ async function drawTask(user) {
         const { statusCode, headers, result } = await request(urlObject)
         console.log(statusCode, headers, result);
         //解构返回
-        if (result?.code == 200) {
+        if (result?.code == "200") {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.message}]🎉`)
         } else {
             //打印请求错误信息
@@ -205,7 +205,7 @@ async function missonTask(user,taskid) {
         //解构返回, 只需要result也可以这样:
         // const {result} = await request(urlObject);
         //let result = await httpRequest(urlObject)
-        const { statusCode, headers, result } = await request(urlObject)
+        const {headers, result } = await request(urlObject)
         //console.log(statusCode, headers, result);
         if (result?.code == 200) {
             DoubleLog(`🌸账号[${user.index}]任务${result.message}` + `\n🕊任务编号:${taskid}🎉`)
@@ -231,17 +231,6 @@ async function jifen(user) {
                 "accountId": user.accountId,
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129",
             },
-            //body: `{"isReward":false}`   //请求体，get方法没有请求体  //httpRequest
-            // form: 
-            // {
-            //     "pointId": "620415610219683840",
-            //     "accountId": "",
-            //     "type": "1",
-            //     "pageNumber": "1",
-            //     "pageSize": "10",
-            //     "startDate": "",
-            //     "endDate": ""
-            // }
         };
         //解构返回, 只需要result也可以这样:
         // const {result} = await request(urlObject);
