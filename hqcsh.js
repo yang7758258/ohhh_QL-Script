@@ -10,7 +10,7 @@
  */
 // ============================================================================================================
 const $ = new Env('vx好奇车生活') 
-//const notify = $.isNode() ? require("./sendNotify") : "";
+const notify = $.isNode() ? require("./sendNotify") : "";
 const got = require('got') //青龙发包依赖
 const env_name = 'hqcsh' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
