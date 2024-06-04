@@ -172,7 +172,7 @@ async function drawTask(user) {
             //form: {"isReward":false} Got
         };
         const { statusCode, headers, result } = await request(urlObject)
-        console.log(statusCode, headers, result);
+        //console.log(statusCode, headers, result);
         //解构返回
         if (result?.code == "200") {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.message}]🎉`)
