@@ -2,7 +2,7 @@
  *
  *htmwg
  *Author: Mist
- *Date: 2024-06-03
+ *Date: 2024-06-05
  * 抓公众号金多多商城 cookie
  * cron 10 0 * * * jddsc.js
  * export jddsc= cookie 多账号换行或者#分隔
