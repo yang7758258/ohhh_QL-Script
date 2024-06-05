@@ -2,10 +2,10 @@
  *
  *htmwg
  *Author: Mist
- *Date: 2024-06-05
- * 抓公众号金多多商城 cookie
+ *Date: 2024-06-03
+ * 抓域名cmallapi.haday.cn下 cookie
  * cron 10 0 * * * jddsc.js
- * export jddsc= cookie 多账号换行或者#分隔
+ * export ddsc= Authorization&uuid 多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('vx金多多商城') 
@@ -69,20 +69,13 @@ async function userTask(user) {
     console.log(`\n============= 账号[${user.index}]开始任务 =============`)
     //debugLog(`【debug】 这是你的账号数组:\n ${user}`);
     await SignTask(user)
-    await wait(1)
-    await missiontask(user,id1)
-    await wait(3)
-    await missiontask(user,id2)
-    await wait(3)
-    await missiontask(user,id3)
-    await wait(3)
-    await missiontask(user,id4)
-    await wait(3)
-    await missiontask(user,id5)
-    await wait(2)
-    await tixian(user)
-    await chaxun(user)
+    for (let i = 1; i <= 5; i++) {
+        await missiontask(user, `id${i}`);
+        await wait(2);
+    }
 
+    await tixian(user);
+    await chaxun(user);
 }
 // =============================================================================================================================
 //用户签到
