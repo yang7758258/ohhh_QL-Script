@@ -3,7 +3,7 @@
  *hqcsh
  *Author: Mist
  *Date: 2024-06-04
- * cron 0 6,18 * * *           
+ * cron 0 6,18 * * *  hqcsh.js         
  * 微信小程序 好奇车生活 ck有效期不清楚   完成签到 抽奖 日常任务 新手任务
  * 抓域名https://channel.cheryfs.cn/下 accountId
  * export hqcsh= accountId 多账号换行或者#分隔
