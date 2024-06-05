@@ -3,9 +3,9 @@
  *htmwg
  *Author: Mist
  *Date: 2024-06-03
- * 抓域名cmallapi.haday.cn下 cookie
+ * 抓公众号金多多电子贸易商城 cookie
  * cron 10 0 * * * jddsc.js
- * export ddsc= Authorization&uuid 多账号换行或者#分隔
+ * export jddsc=cookie  多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('vx金多多商城') 
