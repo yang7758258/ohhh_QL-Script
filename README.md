@@ -6,6 +6,7 @@
 | 海天美味馆|[Htmwg](https://github.com/yang7758258/ohhh154/blob/main/htmwg.js)|✅(2024/06/03)|✅ |
 |金多多商城 |[Jddsc](https://github.com/yang7758258/ohhh154/blob/main/jddsc.js)|✅(2024/06/05)|❌|
 |仰韶会员俱乐部|[Yshyjlb](https://github.com/yang7758258/ohhh154/blob/main/yshyjlb.js)|✅(2024/06/08)|✅|
+|健达福利社|[Jdfls](https://github.com/yang7758258/ohhh154/blob/main/jdfls.js)|✅(2024/06/09)|✅|
 
 ------
 ###
