@@ -4,7 +4,8 @@
 |     zippo签到         | [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo.js) | ✅(2024/05/30) |      ✅     |
 |     好奇车生活        | [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/hqcsh.js) | ✅(2024/06/02) |      ✅     |
 | 海天美味馆|[Htmwg](https://github.com/yang7758258/ohhh154/blob/main/htmwg.js)|✅(2024/06/03)|✅ |
-|金多多商城 |[Jddsc](https://github.com/yang7758258/ohhh154/blob/main/jddsc.js)|✅(2024/06/05)|✅|
+|金多多商城 |[Jddsc](https://github.com/yang7758258/ohhh154/blob/main/jddsc.js)|✅(2024/06/05)|❌|
+|仰韶会员俱乐部|[Yshyjlb](https://github.com/yang7758258/ohhh154/blob/main/yshyjlb.js)|✅(2024/06/08)|✅|
 
 ------
 ###
