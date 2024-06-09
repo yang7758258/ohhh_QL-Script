@@ -3,14 +3,14 @@
  *hqcsh
  *Author: Mist
  *Date: 2024-06-04
- * cron 0 6,18 * * *  hqcsh.js         
+ * cron 0 6,18 * * *  好奇车生活.js         
  * 微信小程序 好奇车生活 ck有效期不清楚   完成签到 抽奖 日常任务 新手任务
  * 抓域名https://channel.cheryfs.cn/下 accountId
  * export hqcsh= accountId 多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('vx好奇车生活') 
-const notify = $.isNode() ? require("./sendNotify") : "";
+//const notify = $.isNode() ? require("./sendNotify") : "";
 const got = require('got') //青龙发包依赖
 const env_name = 'hqcsh' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
@@ -38,6 +38,7 @@ async function main() {
         return
     }
     let user_ck = env.split('\n')//多账号分割,这里默认是换行(\n)分割,其他情况自己实现
+    DoubleLog(`\n========= 共找到 ${user_ck.length} 个账号 =========`);
     let index = 1 //用来给账号标记序号, 从1开始
     //循环遍历每个账号
     for (let ck of user_ck) {
@@ -172,7 +173,7 @@ async function drawTask(user) {
             //form: {"isReward":false} Got
         };
         const { statusCode, headers, result } = await request(urlObject)
-        //console.log(statusCode, headers, result);
+        console.log(statusCode, headers, result);
         //解构返回
         if (result?.code == "200") {
             DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.message}]🎉`)
@@ -208,7 +209,7 @@ async function missonTask(user,taskid) {
         const {headers, result } = await request(urlObject)
         //console.log(statusCode, headers, result);
         if (result?.code == 200) {
-            DoubleLog(`🌸账号[${user.index}]任务${result.message}` + `\n🕊任务编号:${taskid}🎉`)
+            console.log(`🌸账号[${user.index}]任务${result.message}` + `\n🕊任务编号:${taskid}🎉`)
         } else{
             //打印请求错误信息
             DoubleLog(`🌸账号[${user.index}]任务失败:[${result.message}]`)
