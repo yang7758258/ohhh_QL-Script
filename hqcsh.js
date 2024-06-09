@@ -16,7 +16,7 @@ const env_name = 'hqcsh' //环境变量名字
 const env = process.env[env_name] || '' //或 process.env.zippoCookie, node读取变量方法. 后面的 || 表示如果前面结果为false或者空字符串或者null或者undifined, 就取后面的值
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.4";//脚本版本号
+let scriptVersionNow = "1.0.5";//脚本版本号
 let msg = "";
 //let host = 'channel.cheryfs.cn';//用got时注释
 //let hostname = 'https://' + host;
@@ -92,10 +92,10 @@ async function SignTask(user) {
             },
         };
         let { data: result } = await axios.request(urlObject)
-        console.log(result);
+        //console.log(result);
         if (result?.code == 200) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊今日签到状态为:[${result.message}]🎉`);
+            DoubleLog(`🌸账号[${user.index}]` + `🕊今日签到状态为:[${result.success}]🎉`);
         } else {
             //打印请求错误信息
             DoubleLog(`🌸账号[${user.index}]签到失败,可能是CK失效!`)
@@ -142,9 +142,9 @@ async function drawTask(user) {
             //form: {"isReward":false} Got
         };
         let { data: result } = await axios.request(urlObject)
-        console.log(result);
+        //console.log(result);
         if (result?.code == "200") {
-            DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.message}]🎉`)
+            DoubleLog(`🌸账号[${user.index}]` + `🕊抽奖状态:[${result.success}]🎉`)
         } else {
             //打印请求错误信息
             DoubleLog(`🌸账号[${user.index}]抽奖失败`)
@@ -169,7 +169,7 @@ async function missonTask(user,taskid) {
             },
         };
         let {data: result } = await axios.request(urlObject)
-        console.log(result);
+        //console.log(result);
         if (result?.code == 200) {
             console.log(`🌸账号[${user.index}]任务${result.message}` + `\n🕊任务编号:${taskid}🎉`)
         } else{
@@ -196,7 +196,7 @@ async function jifen(user) {
         };
         
         let {data: result } = await axios.request(urlObject)
-        console.log(result);
+        //console.log(result);
         if (result?.code == 200) {
             DoubleLog(`🌸账号[${user.index}]总积分💰:[${result.result}]🎉`)
         } else{
