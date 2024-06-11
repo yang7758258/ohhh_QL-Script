@@ -90,7 +90,7 @@ async function SignTask(user) {
             DoubleLog(`🌸账号[${user.index}]` + `🕊签到${result.msg}，获得[${result.data.coin}]积分🎉`);
         }if(result?.status == "500") {
             DoubleLog(`🌸账号[${user.index}]签到失败:[${result.msg}]❌`)
-        }if (result?.code == "500") {
+        }if (result?.status == "404") {
             DoubleLog(`🌸账号[${user.index}]签到失败:${result.msg}❌`)
         }
         
@@ -121,7 +121,7 @@ async function account(user) {
         //console.log(result);
         if (result?.status == "200") {
             DoubleLog(`🌸账号[${user.index}]🕊账户当前积分${result.data.memberInfo.all_points}💰`)
-        }if (result?.code == "100005"){
+        }if (result?.status == "404"){
             DoubleLog(`🌸账号[${user.index}]🕊查询当前积分失败:${result.msg}❌`)
         }
     } catch (e) {
