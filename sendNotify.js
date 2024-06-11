@@ -1,21 +1,26 @@
+/*
+ * @Author: lxk0301 https://gitee.com/lxk0301
+ * @Date: 2020-08-19 16:12:40
+ * @Last Modified by: whyour
+ * @Last Modified time: 2021-5-1 15:00:54
+ * sendNotify 推送通知功能
+ * @param text 通知头
+ * @param desp 通知体
+ * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
+ * @param author 作者仓库等信息  例：`本通知 By：https://github.com/whyour/qinglong`
+ */
+
 const querystring = require('querystring');
 const $ = new Env();
 const timeout = 15000; //超时时间(单位毫秒)
-// =======================================gotify通知设置区域==============================================
-//gotify_url 填写gotify地址,如https://push.example.de:8080
-//gotify_token 填写gotify的消息应用token
-//gotify_priority 填写推送消息优先级,默认为0
-let GOTIFY_URL = '';
-let GOTIFY_TOKEN = '';
-let GOTIFY_PRIORITY = 0;
 // =======================================go-cqhttp通知设置区域===========================================
 //gobot_url 填写请求地址http://127.0.0.1/send_private_msg
 //gobot_token 填写在go-cqhttp文件设置的访问密钥
 //gobot_qq 填写推送到个人QQ或者QQ群号
 //go-cqhttp相关API https://docs.go-cqhttp.org/api
-let GOBOT_URL = ''; // 推送到个人QQ: http://127.0.0.1/send_private_msg  群：http://127.0.0.1/send_group_msg
+let GOBOT_URL = ''; // 推送到个人QQ: http://127.0.0.1/send_private_msg  群：http://127.0.0.1/send_group_msg 
 let GOBOT_TOKEN = ''; //访问密钥
-let GOBOT_QQ = ''; // 如果GOBOT_URL设置 /send_private_msg 则需要填入 user_id=个人QQ 相反如果是 /send_group_msg 则需要填入 group_id=QQ群
+let GOBOT_QQ = ''; // 如果GOBOT_URL设置 /send_private_msg 则需要填入 user_id=个人QQ 相反如果是 /send_group_msg 则需要填入 group_id=QQ群 
 
 // =======================================微信server酱通知设置区域===========================================
 //此处填你申请的SCKEY.
@@ -25,9 +30,6 @@ let SCKEY = '';
 // =======================================Bark App通知设置区域===========================================
 //此处填你BarkAPP的信息(IP/设备码，例如：https://api.day.app/XXXXXXXX)
 let BARK_PUSH = '';
-//BARK app推送图标,自定义推送图标(需iOS15或以上)
-let BARK_ICON =
-  'https://img.gejiba.com/images/a3f551e09ac19add4c49ec16228729c5.png';
 //BARK app推送铃声,铃声列表去APP查看复制填写
 let BARK_SOUND = '';
 //BARK app推送消息的分组, 默认为"QingLong"
@@ -81,21 +83,109 @@ let IGOT_PUSH_KEY = '';
 let PUSH_PLUS_TOKEN = '';
 let PUSH_PLUS_USER = '';
 
+//==========================云端环境变量的判断与接收=========================
+if (process.env.GOBOT_URL) {
+  GOBOT_URL = process.env.GOBOT_URL;
+}
+if (process.env.GOBOT_TOKEN) {
+  GOBOT_TOKEN = process.env.GOBOT_TOKEN;
+}
+if (process.env.GOBOT_QQ) {
+  GOBOT_QQ = process.env.GOBOT_QQ;
+}
+
+if (process.env.PUSH_KEY) {
+  SCKEY = process.env.PUSH_KEY;
+}
+
+if (process.env.QQ_SKEY) {
+  QQ_SKEY = process.env.QQ_SKEY;
+}
+
+if (process.env.QQ_MODE) {
+  QQ_MODE = process.env.QQ_MODE;
+}
+
+if (process.env.BARK_PUSH) {
+  if (
+    process.env.BARK_PUSH.indexOf('https') > -1 ||
+    process.env.BARK_PUSH.indexOf('http') > -1
+  ) {
+    //兼容BARK自建用户
+    BARK_PUSH = process.env.BARK_PUSH;
+  } else {
+    BARK_PUSH = `https://api.day.app/${process.env.BARK_PUSH}`;
+  }
+  if (process.env.BARK_SOUND) {
+    BARK_SOUND = process.env.BARK_SOUND;
+  }
+  if (process.env.BARK_GROUP) {
+    BARK_GROUP = process.env.BARK_GROUP;
+  }
+} else {
+  if (
+    BARK_PUSH &&
+    BARK_PUSH.indexOf('https') === -1 &&
+    BARK_PUSH.indexOf('http') === -1
+  ) {
+    //兼容BARK本地用户只填写设备码的情况
+    BARK_PUSH = `https://api.day.app/${BARK_PUSH}`;
+  }
+}
+if (process.env.TG_BOT_TOKEN) {
+  TG_BOT_TOKEN = process.env.TG_BOT_TOKEN;
+}
+if (process.env.TG_USER_ID) {
+  TG_USER_ID = process.env.TG_USER_ID;
+}
+if (process.env.TG_PROXY_AUTH) TG_PROXY_AUTH = process.env.TG_PROXY_AUTH;
+if (process.env.TG_PROXY_HOST) TG_PROXY_HOST = process.env.TG_PROXY_HOST;
+if (process.env.TG_PROXY_PORT) TG_PROXY_PORT = process.env.TG_PROXY_PORT;
+if (process.env.TG_API_HOST) TG_API_HOST = process.env.TG_API_HOST;
+
+if (process.env.DD_BOT_TOKEN) {
+  DD_BOT_TOKEN = process.env.DD_BOT_TOKEN;
+  if (process.env.DD_BOT_SECRET) {
+    DD_BOT_SECRET = process.env.DD_BOT_SECRET;
+  }
+}
+
+if (process.env.QYWX_KEY) {
+  QYWX_KEY = process.env.QYWX_KEY;
+}
+
+if (process.env.QYWX_AM) {
+  QYWX_AM = process.env.QYWX_AM;
+}
+
+if (process.env.IGOT_PUSH_KEY) {
+  IGOT_PUSH_KEY = process.env.IGOT_PUSH_KEY;
+}
+
+if (process.env.PUSH_PLUS_TOKEN) {
+  PUSH_PLUS_TOKEN = process.env.PUSH_PLUS_TOKEN;
+}
+if (process.env.PUSH_PLUS_USER) {
+  PUSH_PLUS_USER = process.env.PUSH_PLUS_USER;
+}
+//==========================云端环境变量的判断与接收=========================
+
 /**
  * sendNotify 推送通知功能
  * @param text 通知头
  * @param desp 通知体
  * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
- * @param author 作者仓库等信息  例：`本通知 By：https://www.baidu.com`
+ * @param author 作者仓库等信息  例：`本通知 By：https://github.com/whyour/qinglong`
  * @returns {Promise<unknown>}
  */
 async function sendNotify(
   text,
   desp,
   params = {},
-  author = '',
+  author = `\n\n本通知 By：https://github.com/leafTheFish/DeathNote\n通知时间：${new Date()}`,
 ) {
   //提供6种通知
+  desp += author; //增加作者信息，防止被贩卖等
   await Promise.all([
     serverNotify(text, desp), //微信server酱
     pushPlusNotify(text, desp), //pushplus(推送加)
@@ -109,46 +199,8 @@ async function sendNotify(
     qywxBotNotify(text, desp), //企业微信机器人
     qywxamNotify(text, desp), //企业微信应用消息推送
     iGotNotify(text, desp, params), //iGot
-    gobotNotify(text, desp), //go-cqhttp
-    gotifyNotify(text, desp), //gotify
+    gobotNotify(text, desp),//go-cqhttp
   ]);
-}
-
-function gotifyNotify(text, desp) {
-  return new Promise((resolve) => {
-    if (GOTIFY_URL && GOTIFY_TOKEN) {
-      const options = {
-        url: `${GOTIFY_URL}/message?token=${GOTIFY_TOKEN}`,
-        body: `title=${encodeURIComponent(text)}&message=${encodeURIComponent(
-          desp,
-        )}&priority=${GOTIFY_PRIORITY}`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      };
-      $.post(options, (err, resp, data) => {
-        try {
-          if (err) {
-            console.log('gotify发送通知调用API失败！！\n');
-            console.log(err);
-          } else {
-            data = JSON.parse(data);
-            if (data.id) {
-              console.log('gotify发送通知消息成功🎉\n');
-            } else {
-              console.log(`${data.message}\n`);
-            }
-          }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
 }
 
 function gobotNotify(text, desp, time = 2100) {
@@ -156,7 +208,7 @@ function gobotNotify(text, desp, time = 2100) {
     if (GOBOT_URL) {
       const options = {
         url: `${GOBOT_URL}?access_token=${GOBOT_TOKEN}&${GOBOT_QQ}`,
-        json: { message: `${text}\n${desp}` },
+        json: {message:`${text}\n${desp}`},
         headers: {
           'Content-Type': 'application/json',
         },
@@ -324,9 +376,7 @@ function BarkNotify(text, desp, params = {}) {
       const options = {
         url: `${BARK_PUSH}/${encodeURIComponent(text)}/${encodeURIComponent(
           desp,
-        )}?icon=${BARK_ICON}?sound=${BARK_SOUND}&group=${BARK_GROUP}&${querystring.stringify(
-          params,
-        )}`,
+        )}?sound=${BARK_SOUND}&group=${BARK_GROUP}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -564,7 +614,7 @@ function qywxamNotify(text, desp) {
               textcard: {
                 title: `${text}`,
                 description: `${desp}`,
-                url: 'https://www.baidu.com',
+                url: 'https://github.com/whyour/qinglong',
                 btntxt: '更多',
               },
             };
