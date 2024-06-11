@@ -182,7 +182,7 @@ async function sendNotify(
   text,
   desp,
   params = {},
-  author = `\n\n本通知 By：https://github.com/leafTheFish/DeathNote\n通知时间：${new Date()}`,
+  author = `\n\n本通知 By：https://github.com/yang7758258/ohhh154\n通知时间：${new Date()}`,
 ) {
   //提供6种通知
   desp += author; //增加作者信息，防止被贩卖等
