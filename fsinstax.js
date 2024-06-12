@@ -14,7 +14,7 @@ const env_name = 'fsinstax' //环境变量名字
 const env = process.env[env_name] || '' //获取环境变量
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.0";//脚本版本号
+let scriptVersionNow = "1.0.1";//脚本版本号
 let msg = "";
 // ==================================异步顺序==============================================================================
 !(async () => {
@@ -69,20 +69,23 @@ async function userTask(user) {
 async function SignTask(user) {
     try {
         let urlObject = {
-            method: 'get',
-            url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/sign-activity/23?limit=20&offset=1`,
+            method: 'post',
+            url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/sign-activity/23/sign`,
             headers: {
                 'Host': 'instax.app.xcxd.net.cn',
                 'Authorization': user.Authorization,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
             },
+            data: {
+                
+            }
         }
         //
         let { data: result} = await axios.request(urlObject)
         //console.log(result);
         if (result) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊签到状态[${result.data.sign}]，已连续签到${result.data.continuity_days}天🎉`);
+            DoubleLog(`🌸账号[${user.index}]` + `🕊签到成功🎉`);
         }if(result?.data.sign == "false") {
             DoubleLog(`🌸账号[${user.index}]签到失败:原因未知❌`)
         }if (result?.code == "500") {
@@ -92,7 +95,11 @@ async function SignTask(user) {
         
     } catch (e) {
         //打印错误信息
-        console.log(e)
+       // console.log(e.response.data);
+       if (e.response.data.code == "422") {
+            DoubleLog(`🌸账号[${user.index}]签到失败:${e.response.data.tips}❌`)
+       }
+        
     }
 }
 //账户积分
