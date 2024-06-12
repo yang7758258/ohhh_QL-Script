@@ -70,7 +70,7 @@ async function SignTask(user) {
     try {
         let urlObject = {
             method: 'post',
-            url: 'https://cb-bags-slb.weinian.com.cn/member/v1/memberBuryPoint/add',
+            url: 'https://cb-bags-slb.weinian.com.cn/wnuser/v1/memberUser/daySign',
             headers: {
                 'Host': 'cb-bags-slb.weinian.com.cn',
                 'Content-Type': 'application/json',
