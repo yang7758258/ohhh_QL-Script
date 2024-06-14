@@ -1,9 +1,9 @@
 /**
  *
- *tcbjtxq
- *Author: Mist
- *Date: 2024-06-14
- *vx汤臣倍健汤星球 Authorization 积分换实物
+ * tcbjtxq
+ * Author: Mist
+ * Date: 2024-06-14
+ * vx汤臣倍健汤星球 Authorization 积分换实物
  * cron "0 10 * * *" tcbjtxq.js
  * export tcbjtxq= Authorization 多账号换行或者#分隔
  */
