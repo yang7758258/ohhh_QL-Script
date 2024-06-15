@@ -7,7 +7,6 @@
 |仰韶会员俱乐部|[Yshyjlb](https://github.com/yang7758258/ohhh154/blob/main/yshyjlb.js)|✅(2024/06/08)|✅|
 |健达福利社|[Jdfls](https://github.com/yang7758258/ohhh154/blob/main/jdfls.js)|✅(2024/06/09)|✅|
 |富士instax|[Fsinstax](https://github.com/yang7758258/ohhh154/blob/main/fsinstax.js)|✅(2024/06/12)|✅|
-|汤臣倍健汤星球|[Tcbjtxq](https://github.com/yang7758258/ohhh154/blob/main/tcbjtxq.js)|✅(2024/06/14)|✅|
 
 
 
