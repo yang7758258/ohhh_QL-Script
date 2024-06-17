@@ -66,9 +66,8 @@ async function userTask(user) {
     //debugLog(`【debug】 这是你的账号数组:\n ${user}`);
     await SignTask(user)
     await wait(2)
-    for (let i = 0; i < 7; i++) {
-        const id = i === 0 ? '' : `id${i}`;
-        await missonTask(user, id);
+    for (let i = 0; i < taskId.length; i++) {
+        await missonTask(user, taskId[i]);
         await wait(2);
     }
     await drawTask(user)
@@ -117,14 +116,6 @@ const taskId = [
     "662805119309467648",//附近加油站
     "662805251388100608"//违章
   ];
-const id  = taskId[0]
-const id1 = taskId[1]
-const id2 = taskId[2]
-const id3 = taskId[3]
-const id4 = taskId[4]
-const id5 = taskId[5]
-const id6 = taskId[6]
-const id7 = taskId[7]
 // ============================================================================================
 //每日抽奖接口
 async function drawTask(user) {
