@@ -3,9 +3,9 @@
  * Ljgy
  * Author: Mist
  * Date: 2024-06-18
- * 扫码抓token
+ * 扫码进入
  * cron "10 8 * * *" Ljgy.js
- * export Ljgy= token 多账号换行或者#分隔
+ * export Ljgy= 账号&密码 多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('丽瑾国韵') 
@@ -14,7 +14,7 @@ const env_name = 'Ljgy' //环境变量名字
 const env = process.env[env_name] || '' //获取环境变量
 const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
-let scriptVersionNow = "1.0.0";//脚本版本号
+let scriptVersionNow = "1.0.1";//脚本版本号
 let msg = "";
 // ==================================异步顺序==============================================================================
 !(async () => {
@@ -39,13 +39,14 @@ async function main() {
     for (let ck of user_ck) {
         if (!ck) continue //跳过空行
         let ck_info = ck.split('&')
-        let token = ck_info[0] 
+        let username = ck_info[0]
+        let password = ck_info[1]
         //let uid = ck_info[0]
         //let deviceCode = ck_info[2]
         let user = {
             index: index,
-            token, 
-            //uid,
+            username, 
+            password,
             //deviceCode,
         }
         index = index + 1 //每次用完序号+1
@@ -68,6 +69,7 @@ async function userTask(user) {
 //签到、打卡
 async function SignTask(user,url) {
     try {
+        let token = await LoginTask(user);
         let urlObject = {
             method: 'post',
             url: url,
@@ -77,7 +79,7 @@ async function SignTask(user,url) {
                 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003030) NetType/WIFI Language/zh_CN',
             },
             data: {
-                'token': user.token,
+                'token': token,
             }
         }
         //
@@ -94,6 +96,41 @@ async function SignTask(user,url) {
         }
         
         
+    } catch (e) {
+        //打印错误信息
+        console.log(e.response.data);
+    }
+}
+async function LoginTask(user) {
+    try {
+        let urlObject = {
+            method: 'post',
+            url: 'http://wep.qzlcis.com/api/index/login',
+            headers: {
+                'Host': 'wep.qzlcis.com',
+                'Accept': 'application/json, text/plain, */*',
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003030) NetType/WIFI Language/zh_CN',
+            },
+            data: {
+                "username": user.username,
+                "password": user.password,
+                "token": "",
+            }
+        }
+        //
+        let { data: result} = await axios.request(urlObject)
+        let token = result.data.token
+        //console.log(urlObject);
+        //console.log(result);
+        if (result?.code == '1') {
+            //打印签到结果
+            DoubleLog(`🌸账号[${user.index}]` + `🕊登陆${result.info}🎉`);
+           
+        }if(result?.code == "0") {
+            DoubleLog(`🌸账号[${user.index}]失败:${result.info}❌`)
+        }
+        
+        return token
     } catch (e) {
         //打印错误信息
         console.log(e.response.data);
