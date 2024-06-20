@@ -2,7 +2,7 @@
  * 麦斯威尔福利社
  * mswefls
  * Author: Mist
- * Date: 2024-06-18
+ * Date: 2024-06-20
  * cron "10 12 * * *" mswefls.js
  * export mswefls= token     多账号换行或者#分隔
  */
