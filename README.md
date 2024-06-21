@@ -8,6 +8,7 @@
 |健达福利社|[Jdfls](https://github.com/yang7758258/ohhh154/blob/main/jdfls.js)|✅(2024/06/09)|✅|
 |富士instax|[Fsinstax](https://github.com/yang7758258/ohhh154/blob/main/fsinstax.js)|✅(2024/06/12)|✅|
 |麦斯威尔福利社|[Mswefls](https://github.com/yang7758258/ohhh154/blob/main/mswefls.js)|✅(2024/06/20)|✅|
+|日清体验馆|[Rqtyg](https://github.com/yang7758258/ohhh154/blob/main/rqtyg.js)|✅(2024/06/21)|✅|
 
 
 
