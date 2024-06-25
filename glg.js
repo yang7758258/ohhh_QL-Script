@@ -83,7 +83,7 @@ async function Sign(user) {
         //console.log(result);
         if (result?.code == 0 ) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊签到成功-获得[${result.data.reward}]积分🎉`);
+            DoubleLog(`🌸账号[${user.index}]` + `🕊签到成功-[${result}]🎉`);
         }else{
             DoubleLog(`🌸账号[${user.index}]签到-失败:${result.msg}❌`)
         }
@@ -115,7 +115,7 @@ async function Draw(user) {
         //console.log(result);
         if (result.code == 0) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]🕊抽奖成功-获得${result.data.lotteryItem.commodity[1].name}🎉`);
+            DoubleLog(`🌸账号[${user.index}]🕊抽奖成功-获得${result}🎉`);
         }else {
             DoubleLog(`🌸账号[${user.index}]🕊抽奖:${result.msg}❌`)
         }
