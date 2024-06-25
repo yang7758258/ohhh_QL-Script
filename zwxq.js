@@ -1,6 +1,6 @@
 /**
  * vx植物星球 
- * xpnc
+ * zwxq
  * Author: Mist
  * Date: 2024-06-25
  * cron "30 9 * * *" zwxq.js
