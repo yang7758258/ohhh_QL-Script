@@ -142,7 +142,7 @@ async function Draw(user) {
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090b11) XWEB/9129',
             },
             data:{
-                "activity_rule_id": 349294488649024
+                "activity_rule_id": 354251475906880
               }
 
         }
