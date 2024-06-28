@@ -12,6 +12,7 @@
 |Babycare|[Babycare](https://github.com/yang7758258/ohhh154/blob/main/babycare.js)|✅(2024/06/21)|✅|
 |兴攀农场|[Xpnc](https://github.com/yang7758258/ohhh154/blob/main/xpnc.js)|✅(2024/06/25)|✅|
 |植物星球|[Zwxq](https://github.com/yang7758258/ohhh154/blob/main/zwxq.js)|✅(2024/06/25)|✅|
+|诸暨西施眼|[Zjxsy](https://github.com/yang7758258/ohhh154/blob/main/zjxsy.js)|✅(2024/06/28)|✅|
 
 
 
