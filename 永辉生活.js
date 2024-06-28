@@ -1,7 +1,21 @@
-function hi() {
-	console.log("Hello World!");
-}
-hi();
+/*
+永辉生活 v1.01
+
+登录前开启捉包, 捉登录包响应里面的uid和refreshToken
+或网页登录获取: https://service.leafxxx.win/yonghui/login.html
+把捉包或者网页登录获取的uid,refreshToken和备注(非必须)填到文件 yhshCookie.txt 里(第一次运行会自动创建), 多账号换行写
+uid#refreshToken#备注
+例子: 
+123456789321654987#12345678-1345-3546-69c3-xxxxxxxxxxxx#doubi
+679113468143213246#yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy#huoge
+
+自动签到和组队互助
+目前组队互助是积分大头, 一队需要3个号, N个号可以组满N/2队
+500积分可以抵扣1元(上限貌似是抵扣20%), 小毛
+
+cron: 16 7,8,20 * * *
+const $ = new Env("永辉生活");
+*/
 const _0x5827a5 = _0x2f9b;
 (function (_0xb42f5f, _0x591081) {
 	const _0x4c7bb8 = _0x2f9b,
