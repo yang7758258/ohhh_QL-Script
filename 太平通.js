@@ -1,3 +1,21 @@
+/*
+太平通 v1.01
+
+自动完成任务得金币, 金币可以兑换E卡猫超卡会员卡等(需要实名和过人脸)
+脚本仅完成任务, 兑换请自己想办法
+目前需要每天手动打开一次APP, 否则容易火爆黑号, 火爆后可能需要几天才会恢复
+定时每天一两次即可
+
+自己捉包域名 ecustomer.cntaiping.com 的两个值:
+ x-ac-token-ticket (或tokenkey)
+ x-ac-device-id (可选)
+把这两个用#连起来填到变量 tptCookie 里, 多账号换行或&或@隔开
+不填x-ac-device-id的话脚本每次运行会随机生成一个
+export tptCookie="eyJ0xxxxxxxxxxxxxxxxxx#18f5609fe20-xxxxxxxx-xxxxx-xxxxx"
+
+cron: 14 6,18 * * *
+const $ = new Env("太平通");
+*/
 const _0x433672 = _0x52b7;
 function _0x5de7() {
 	const _0x472fc0 = [
