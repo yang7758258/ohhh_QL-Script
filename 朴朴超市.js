@@ -5,9 +5,7 @@
 组队瓜分需要4人成团, 每个号每天只能开团和入队各一次
 每天跑一两次即可
 
-使用扫码或自己想办法捉refreshToken
-扫码获取token: (先微信进入朴朴超市小程序并登录注册过账号再扫码)
-https://service.leafxxx.win/pupu/login.html
+
 把获取的refreshToken和备注(非必须)填到文件pupuCookie.txt里(第一次运行会自动创建), 多账号换行或&或@隔开
 export pupuCookie="refreshToken#备注"
 
