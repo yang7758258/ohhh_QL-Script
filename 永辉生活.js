@@ -1356,9 +1356,9 @@ class _0x35e111 extends _0x55ea0b {
 	}
 	async [_0x5827a5(177) + _0x5827a5(219)](_0xc73f9f = {}) {
 		const _0x31d010 = _0x5827a5;
-		// if (!(await this[_0x31d010(253) + _0x31d010(470) + _0x31d010(381)]())) {
-		// 	return;
-		// }
+		if (!(await this[_0x31d010(253) + _0x31d010(470) + _0x31d010(381)]())) {
+			return;
+		}
 		await this[_0x31d010(201) + _0x31d010(502) + _0x31d010(259) + "il"]();
 		await this[_0x31d010(370) + _0x31d010(449)]();
 	}
@@ -1422,9 +1422,9 @@ function _0x462bc1() {
 				return _0x36424d();
 			},
 		};
-	if (!(await _0x29aa83[_0x269d49(286)](_0x1976a1))) {
-		return;
-	}
+	// if (!(await _0x29aa83[_0x269d49(286)](_0x1976a1))) {
+	// 	return;
+	// }
 	if (!_0x5d5328()) {
 		return;
 	}
