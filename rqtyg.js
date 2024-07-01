@@ -128,6 +128,40 @@ async function Shop(user) {
         console.log(e.response.data);
     }
 }
+//消消乐
+async function game(user) {
+    try {
+        let urlObject = {
+            method: 'post',
+            url: `https://prod-api.nissinfoodium.com.cn/gw-shop/app/v1/store-cart/add`,
+            headers: {
+                'Host': 'prod-api.nissinfoodium.com.cn',
+                'content-type': 'application/json',
+                'enterprise-hash': '1246b9ecd0972c7b0e50b4c9cdad9f0c',
+                'token': user.token,
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090b11) XWEB/9129',
+            },
+            data:{
+                "sku_id": 334385068518080,
+                "number": 1
+            }
+
+        }
+        //
+        let { data: result} = await axios.request(urlObject)
+        //console.log(urlObject);
+        //console.log(result);
+        if (result?.code == '200') {
+            //打印签到结果
+            DoubleLog(`🌸账号[${user.index}]` + `🕊购物车🛒加购${result.message}🎉`);
+        }else {
+            DoubleLog(`🌸账号[${user.index}]购物车🛒加购:${result.message}❌`)
+        }
+    } catch (e) {
+        //打印错误信息
+        console.log(e.response.data);
+    }
+}
 //抽奖
 async function Draw(user) {
     try {
@@ -142,7 +176,7 @@ async function Draw(user) {
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090b11) XWEB/9129',
             },
             data:{
-                "activity_rule_id": 354251475906880
+                "activity_rule_id": 354784930754624
               }
 
         }
