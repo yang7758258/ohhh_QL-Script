@@ -76,6 +76,7 @@ async  userTask(user) {
             break;
         }
         await this.Draw(user);
+        await wait (2)
         count++;
     }
     await this.account(user)
