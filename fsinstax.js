@@ -16,18 +16,25 @@ const Notify = 1//是否通知, 1通知, 0不通知. 默认通知
 const debug = 0//是否调试, 1调试, 0不调试. 默认不调试
 let scriptVersionNow = "1.0.1";//脚本版本号
 let msg = "";
+let thanks;
 // ==================================异步顺序==============================================================================
 !(async () => {
     await getNotice();  //远程通知
-    await getVersion("yang7758258/ohhh154@main/fsinstax.js");
-    await main();//主函数
+    await getVersion("yang7758258/ohhh154@main/fsintax.js");
+    let Run = new run();
+    await Run.main();
+    //await main();//主函数
     await SendMsg(msg); //发送通知
 
 })()
     .catch((e) => $.logErr(e))
     .finally(() => $.done());
 //==================================脚本入口函数main()==============================================================
-async function main() {
+class run {
+    constructor(user) {
+        this.thanks = '谢谢参与'
+    }
+async  main() {
     if (env == '') {
         //没有设置变量,直接退出
         console.log(`没有填写变量,请查看脚本说明: ${env_name}`)
@@ -50,7 +57,7 @@ async function main() {
         }
         index = index + 1 //每次用完序号+1
         //开始账号任务
-        await userTask(user)
+        await this.userTask(user)
         //每个账号之间等1~5秒随机时间
         let rnd_time = Math.floor(Math.random() * 4000) + 1000
         console.log(`账号[${user.index}]随机等待${rnd_time / 1000}秒...`)
@@ -58,72 +65,110 @@ async function main() {
     }
 }
 // ======================================开始任务=========================================
-async function userTask(user) {
+
+async  userTask(user) {
     console.log(`\n============= 账号[${user.index}]开始任务 =============`)
-    await SignTask(user)
+    await this.SignTask(user)
     await wait (1)
-    await account(user)
+    let count = 0;
+    while(this.thanks == '谢谢参与') {
+        if (count >= 5) {
+            break;
+        }
+        await this.Draw(user);
+        count++;
+    }
+    await this.account(user)
 }
 // =============================================================================================================================
 //签到
-async function SignTask(user) {
-    try {
-        let urlObject = {
-            method: 'post',
-            url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/sign-activity/23/sign`,
-            headers: {
-                'Host': 'instax.app.xcxd.net.cn',
-                'Authorization': user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
-            data: {
-                
+    async  SignTask(user) {
+        try {
+            let urlObject = {
+                method: 'post',
+                url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/sign-activity/23/sign`,
+                headers: {
+                    'Host': 'instax.app.xcxd.net.cn',
+                    'Authorization': user.Authorization,
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+                },
+                data: {
+                    
+                }
             }
+            //
+            let { data: result} = await axios.request(urlObject)
+            //console.log(result);
+            if (result) {
+                //打印签到结果
+                DoubleLog(`🌸账号[${user.index}]` + `🕊签到成功🎉`);
+            }if(result?.data.sign == "false") {
+                DoubleLog(`🌸账号[${user.index}]签到失败:原因未知❌`)
+            }if (result?.code == "500") {
+                DoubleLog(`🌸账号[${user.index}]可能已签到:${result.msg}❌`)
+            }
+            
+            
+        } catch (e) {
+            //打印错误信息
+        // console.log(e.response.data);
+        if (e.response.data.code == "422") {
+                DoubleLog(`🌸账号[${user.index}]签到失败:${e.response.data.tips}❌`)
         }
-        //
-        let { data: result} = await axios.request(urlObject)
-        //console.log(result);
-        if (result) {
-            //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊签到成功🎉`);
-        }if(result?.data.sign == "false") {
-            DoubleLog(`🌸账号[${user.index}]签到失败:原因未知❌`)
-        }if (result?.code == "500") {
-            DoubleLog(`🌸账号[${user.index}]可能已签到:${result.msg}❌`)
+            
         }
-        
-        
-    } catch (e) {
-        //打印错误信息
-       // console.log(e.response.data);
-       if (e.response.data.code == "422") {
-            DoubleLog(`🌸账号[${user.index}]签到失败:${e.response.data.tips}❌`)
-       }
-        
     }
-}
-//账户积分
-async function account(user) {
-    try {
-        let urlObject = {
-            method: 'get',
-            url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/credit-record?limit=20&offset=1`,
-            headers: {
-                'Host': 'instax.app.xcxd.net.cn',
-                'Authorization': user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
-        };
-        let { data: result } = await axios.request(urlObject)
-        //console.log(result);
-        if (result) {
-            DoubleLog(`🌸账号[${user.index}]🕊账户当前积分${result.data.normal_credit}💰`)
-        }else {
-            DoubleLog(`🌸账号[${user.index}]🕊查询当前积分失败:${result.msg}❌`)
+//抽奖
+    async  Draw(user) {
+        try {
+            let urlObject = {
+                method: 'post',
+                url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/draw-activities/42/draw`,
+                headers: {
+                    'Host': 'instax.app.xcxd.net.cn',
+                    'Authorization': user.Authorization,
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+                },
+                data: {
+                    
+                }
+            };
+            let { data: result } = await axios.request(urlObject)
+            //console.log(result);
+            if (result?.data.status == 'normal') {
+                DoubleLog(`🌸账号[${user.index}]🕊抽奖成功-获得${result.data.record.desc}🎉`)
+                this.thanks = result.data.record.desc
+            }else {
+                DoubleLog(`🌸账号[${user.index}]🕊抽奖失败:${result.msg}❌`)
+            }
+        } catch (e) {
+            //打印错误信息
+            console.log(e)
         }
-    } catch (e) {
-        //打印错误信息
-        console.log(e)
+    }
+//账户积分
+    async  account(user) {
+        try {
+            let urlObject = {
+                method: 'get',
+                url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/credit-record?limit=20&offset=1`,
+                headers: {
+                    'Host': 'instax.app.xcxd.net.cn',
+                    'Authorization': user.Authorization,
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+                },
+            };
+            let { data: result } = await axios.request(urlObject)
+            //console.log(result);
+            if (result) {
+                DoubleLog(`🌸账号[${user.index}]🕊账户当前积分${result.data.normal_credit}💰`)
+            }else {
+                DoubleLog(`🌸账号[${user.index}]🕊查询当前积分失败:${result.msg}❌`)
+            }
+        } catch (e) {
+            //打印错误信息
+            console.log(e)
+        }
     }
 }
 /**
