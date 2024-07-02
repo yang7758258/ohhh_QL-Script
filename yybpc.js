@@ -249,7 +249,7 @@ function getVersion(scriptUrl, timeout = 3 * 1000) {
                 const regex = /scriptVersionNow\s*=\s*(["'`])([\d.]+)\1/;
                 const match = data.match(regex);
                 const scriptVersionLatest = match ? match[2] : "";
-                DoubleLog(`\n当前使用版本:[${scriptVersionNow}]➡️➡️➡️云端☁️版本:[${scriptVersionLatest}]`);
+                DoubleLog(`\n当前版本:[${scriptVersionNow}]➡️➡➡️云端☁️版本:[${scriptVersionLatest}]`);
             } catch (e) {
                 $.logErr(e, resp);
             }
