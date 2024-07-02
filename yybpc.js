@@ -65,7 +65,7 @@ class run {
         
     }
 async  userTask(user) {
-    console.log(`\n========= 账号[${user.index}]开始任务 =========`)
+    console.log(`\n========= 账号[${user.index}] 开始任务 =========`)
     await this.SignTask(user)
     await wait(2)
     await this.account(user)
