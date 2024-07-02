@@ -136,7 +136,7 @@ async  userTask(user) {
             };
             let { data: result } = await axios.request(urlObject)
             //console.log(result);
-            if (result?.data.status == 'normal') {
+            if (result) {
                 DoubleLog(`🌸账号[${user.index}]🕊抽奖成功-获得${result.data.record.desc}🎉`)
                 this.thanks = result.data.record.desc
             }else {
