@@ -144,7 +144,7 @@ async  userTask(user) {
             }
         } catch (e) {
             //打印错误信息
-            console.log(e)
+            //console.log(e)
         }
     }
 //账户积分
