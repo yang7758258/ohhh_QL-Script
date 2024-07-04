@@ -32,7 +32,7 @@ let thanks;
 //==================================脚本入口函数main()==============================================================
 class run {
     constructor(user) {
-        this.thanks = '谢谢参与'
+        //this.thanks = '谢谢参与'
     }
 async  main() {
     if (env == '') {
