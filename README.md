@@ -15,7 +15,7 @@
 |诸暨西施眼|[Zjxsy](https://github.com/yang7758258/ohhh154/blob/main/zjxsy.js)|✅(2024/06/28)|✅|
 |爷爷不泡茶|[Yybpc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/yybpc.js)|✅(2024/07/02)|✅|
 |毛铺草本荟|[Mpcbh](https://github.com/yang7758258/ohhh_QL-Script/blob/main/mpcbh.js)|✅(2024/07/03)|✅|
-|阿叔同城|[Astc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/astc.js)|✅(2024/07/03)|✅|
+
 
 
 
