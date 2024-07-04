@@ -204,7 +204,7 @@ async  goods(user) {
         DoubleLog(`🕊账号[${user.index}] 开始浏览商品任务...`);
         let urlObject = {
             method: 'post',
-            url: `https://ztvip1.cn/api/o2o.store/storeComment?appid=1491&appkey=4b6577fb535885831ca6aa9ecbcb72ed&version=v3.9.1.8&app_version=v3.9.3.12&openid=${user.openid}&invite&pageid=qianggou&time=1720015571&source=wx_mp&lang=zh_CN`,
+            url: `https://ztvip1.cn/api/o2o.integralrenwu/shop?appid=1491&appkey=4b6577fb535885831ca6aa9ecbcb72ed&version=v3.9.1.8&app_version=v3.9.3.12&openid=${user.openid}&invite&pageid=qianggou&time=1720015571&source=wx_mp&lang=zh_CN`,
             headers: this.headers,
             data : {
                 "store_id": "18292",
