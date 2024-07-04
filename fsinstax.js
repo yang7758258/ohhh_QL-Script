@@ -70,15 +70,15 @@ async  userTask(user) {
     console.log(`\n============= 账号[${user.index}]开始任务 =============`)
     await this.SignTask(user)
     await wait (1)
-    let count = 0;
-    while(this.thanks == '谢谢参与') {
-        if (count >= 5) {
-            break;
+    for(let i = 0; i < 5; i++) {
+        await this.Draw(user)
+        await wait (1)
+        if(this.thanks != '谢谢参与') {
+            console.log(`🌸账号[${user.index}] 已中奖,暂停抽奖`);
+            break
         }
-        await this.Draw(user);
-        await wait (2)
-        count++;
     }
+    
     await this.account(user)
 }
 // =============================================================================================================================
