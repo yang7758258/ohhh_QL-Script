@@ -1,8 +1,8 @@
 ### Script Overview 喜欢请点个🌟
 |   Application          |                                    Script name                                           |   Available   | Maintenance |
 |:----------------------:|:----------------------------------------------------------------------------------------:|:-------------:|:-----------:|
-|     zippo签到         | [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo.js) | ✅(2024/05/30) |      ✅     |
-|     好奇车生活        | [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/hqcsh.js) | ✅(2024/06/02) |      ✅     |
+|zippo签到| [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo.js) | ✅(2024/05/30) | ✅|
+|好奇车生活| [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/hqcsh.js) | ✅(2024/06/02) |✅|
 | 海天美味馆|[Htmwg](https://github.com/yang7758258/ohhh154/blob/main/htmwg.js)|✅(2024/06/03)|❌|
 |仰韶会员俱乐部|[Yshyjlb](https://github.com/yang7758258/ohhh154/blob/main/yshyjlb.js)|✅(2024/06/08)|✅|
 |健达福利社|[Jdfls](https://github.com/yang7758258/ohhh154/blob/main/jdfls.js)|✅(2024/06/09)|✅|
