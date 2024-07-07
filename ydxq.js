@@ -2,7 +2,7 @@
  * 雅迪星球 签到
  * Ydxq
  * Author: Mist
- * Date: 2024-07-05
+ * Date: 2024-07-07
  * cron "59 7 * * *" ydxq.js
  * export ydxq= Authorization 多账号换行或者#分隔
  */
