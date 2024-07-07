@@ -65,7 +65,7 @@ class run {
         
     }
 async  userTask(user) {
-    console.log(`\n========= 账号[${user.index}] 开始任务 =========`)
+    console.log(`\n========= 账号[${user.index}]开始任务 =========`)
     await this.SignTask(user)
     await wait(2)
     await this.account(user)
@@ -249,7 +249,7 @@ function getVersion(scriptUrl, timeout = 3 * 1000) {
                 const regex = /scriptVersionNow\s*=\s*(["'`])([\d.]+)\1/;
                 const match = data.match(regex);
                 const scriptVersionLatest = match ? match[2] : "";
-                DoubleLog(`\n当前版本:[${scriptVersionNow}]➡️➡➡️云端☁️版本:[${scriptVersionLatest}]`);
+                DoubleLog(`\n当前使用版本:[${scriptVersionNow}]➡️➡️➡️云端☁️版本:[${scriptVersionLatest}]`);
             } catch (e) {
                 $.logErr(e, resp);
             }
