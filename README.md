@@ -16,6 +16,7 @@
 |爷爷不泡茶|[Yybpc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/yybpc.js)|✅(2024/07/02)|✅|
 |毛铺草本荟|[Mpcbh](https://github.com/yang7758258/ohhh_QL-Script/blob/main/mpcbh.js)|✅(2024/07/03)|✅|
 |逢三得利吧|[Fsdlb](https://github.com/yang7758258/ohhh_QL-Script/blob/main/fsdlb.js)|✅(2024/07/05)|✅|
+|雅迪星球|[Ydxq](https://github.com/yang7758258/ohhh_QL-Script/blob/main/ydxq.js)|✅(2024/07/07)|✅|
 
 
 
