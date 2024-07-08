@@ -19,6 +19,7 @@
 |雅迪星球|[Ydxq](https://github.com/yang7758258/ohhh_QL-Script/blob/main/ydxq.js)|✅(2024/07/07)|✅|
 |国乐酱酒|[Gljj](https://github.com/yang7758258/ohhh_QL-Script/blob/main/gljj.js)|✅(2024/07/07)|✅|
 |库迪咖啡|[Kdcoffer](https://github.com/yang7758258/ohhh_QL-Script/blob/main/%E5%BA%93%E8%BF%AA%E5%92%96%E5%95%A1.js)|✅(2024/07/08)|✅|
+|雀巢会员俱乐部|[Qchyjlb](https://github.com/yang7758258/ohhh_QL-Script/blob/main/qchyjlb.js)|✅(2024/07/08)|✅|
 
 
 
