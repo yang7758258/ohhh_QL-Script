@@ -1,5 +1,5 @@
 /**
- *
+ *丰信客户端
  *fxkhd
  *Author: Mist 
  *Date: 2024-06-08
@@ -48,56 +48,95 @@ async function main() {
 			deviceCode,
 		};
 		index = index + 1; //每次用完序号+1
-		//开始账号任务
-		await userTask(user);
+		let Run = new run(user);
+        await Run.userTask(user)
 		//每个账号之间等1~5秒随机时间
 		let rnd_time = Math.floor(Math.random() * 4000) + 1000;
 		console.log(`账号[${user.index}]随机等待${rnd_time / 1000}秒...`);
 		await $.wait(rnd_time);
 	}
 }
+class run {
+    constructor(user) {
+		this.signkey = 'nNo7464SYE6kUHjL';
+	}
 // ======================================开始任务=========================================
-async function userTask(user) {
+async  userTask(user) {
 	console.log(`\n============= 账号[${user.index}]开始任务 =============`);
-	await SignTask(user);
+	await this.generalKeyGet(user)
+	await this.SignTask(user);
 	await wait(3);
-	await fb(user);
+	await this.fb(user);
 	await wait(3);
-	await jl(user);
+	await this.jl(user);
 	await wait(3);
-	await jljs(user);
+	await this.jljs(user);
 	await wait(3);
 	for (let i = 0; i < 10; i++) {
-		await dj(user);
+		await this.dj(user);
 		await wait(30);
-		await dy(user);
+		await this.dy(user);
 		await wait(30);
-		await mndj(user);
+		await this.mndj(user);
 		await wait(30);
-		await dyplus(user);
+		await this.dyplus(user);
 		await wait(30);
 	}
 	for (let i = 0; i < 3; i++) {
-		await gg(user);
+		await this.gg(user);
 		await wait(2);
-		await jlmax(user);
+		await this.jlmax(user);
 		await wait(2);
-		await ggplus(user);
+		await this.ggplus(user);
 		await wait(2);
 	}
-	await liulan(user);
+	await this.liulan(user);
 	await wait(30);
-	await zzlq(user);
+	await this.zzlq(user);
 	await wait(2);
-	await account(user);
+	await this.account(user);
 }
 // =============================================================================================================================
-//签到
-async function SignTask(user) {
+async  generalKeyGet(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5(time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5(time + user.uid + this.signkey);
+		//console.log(sign);
+		//console.log(sign);
+		let urlObject = {
+			method: "GET",
+			url: "https://capp.phtion.com/api/system/generalKey",
+			headers: {
+				Host: "capp.phtion.com",
+				version: "3.2.0",
+				token: `${user.token}`,
+				sign: sign,
+				plat: "1",
+				time: time,
+				deviceCode: `${user.deviceCode}`,
+				"User-Agent": "okhttp/4.12.0",
+			},
+		};
+		//
+		let { data: result } = await axios.request(urlObject);
+		//console.log(result);
+		if (result?.status == "200") {
+			//打印签到结果
+			DoubleLog(`🌸账号[${user.index}]` + `🕊获取key成功[${result.data}]🎉`);
+			this.signkey = 'nNo7464SYE6kUHjL' + result.data
+		}
+	} catch (e) {
+		//打印错误信息
+		console.log(e);
+	}
+}
+//签到
+async  SignTask(user) {
+	try {
+		let md5 = require("md5");
+		let time = getTimestamp();
+		let sign = md5(time + user.uid + this.signkey);
 		//console.log(sign);
 		let urlObject = {
 			method: "GET",
@@ -132,12 +171,12 @@ async function SignTask(user) {
 	}
 }
 // 签到任务翻倍
-async function fb(user) {
+async  fb(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
 		let sign = md5(
-			"finishType0taskCode1010taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8"
+			"finishType0taskCode1010taskDetail1" + time + user.uid + this.signkey
 		);
 		let urlObject = {
 			method: "POST",
@@ -172,11 +211,11 @@ async function fb(user) {
 	}
 }
 //激励视频
-async function jl(user) {
+async  jl(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode0011taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode0011taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -210,11 +249,11 @@ async function jl(user) {
 	}
 }
 //激励解锁
-async function jljs(user) {
+async  jljs(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType1taskCode0012taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType1taskCode0012taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -248,11 +287,11 @@ async function jljs(user) {
 	}
 }
 //广告
-async function gg(user) {
+async  gg(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode0010taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode0010taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -286,11 +325,11 @@ async function gg(user) {
 	}
 }
 //看短剧
-async function dj(user) {
+async  dj(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode009taskDetail30" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode009taskDetail30" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -324,11 +363,11 @@ async function dj(user) {
 	}
 }
 //抖音
-async function dy(user) {
+async  dy(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode008taskDetail30" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode008taskDetail30" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -362,11 +401,11 @@ async function dy(user) {
 	}
 }
 //迷你短剧
-async function mndj(user) {
+async  mndj(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode006taskDetail30" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode006taskDetail30" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -400,11 +439,11 @@ async function mndj(user) {
 	}
 }
 //抖音plus
-async function dyplus(user) {
+async  dyplus(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode004taskDetail30" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode004taskDetail30" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -438,11 +477,11 @@ async function dyplus(user) {
 	}
 }
 //激励视频MAX
-async function jlmax(user) {
+async  jlmax(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode007taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode007taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -476,11 +515,11 @@ async function jlmax(user) {
 	}
 }
 //广告plus
-async function ggplus(user) {
+async  ggplus(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode0014taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode0014taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -514,11 +553,11 @@ async function ggplus(user) {
 	}
 }
 //浏览任务
-async function liulan(user) {
+async  liulan(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode002taskDetail30" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode002taskDetail30" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -552,11 +591,11 @@ async function liulan(user) {
 	}
 }
 //最终奖励
-async function zzlq(user) {
+async  zzlq(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5("finishType0taskCode1011taskDetail1" + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5("finishType0taskCode1011taskDetail1" + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "POST",
 			url: "https://capp.phtion.com/api/task/add-task-rate-v3",
@@ -590,11 +629,11 @@ async function zzlq(user) {
 	}
 }
 //账户积分
-async function account(user) {
+async  account(user) {
 	try {
 		let md5 = require("md5");
 		let time = getTimestamp();
-		let sign = md5(`uid${user.uid}` + time + user.uid + "nNo7464SYE6kUHjLdb619fa8");
+		let sign = md5(`uid${user.uid}` + time + user.uid + this.signkey);
 		let urlObject = {
 			method: "get",
 			url: `https://capp.phtion.com/api/account/getintegral?uid=${user.uid}`,
@@ -620,6 +659,7 @@ async function account(user) {
 		//打印错误信息
 		console.log(e);
 	}
+}
 }
 /**
  * =========================================================发送消息=============================================
