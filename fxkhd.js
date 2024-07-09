@@ -1,8 +1,8 @@
 /**
- *丰信客户端
- *fxkhd
- *Author: Mist 
- *Date: 2024-06-08
+ * 丰信客户端
+ * fxkhd
+ * Author: Mist 
+ * Date: 2024-06-08
  * 抓app 丰信客户端 一天1w8积分
  * cron "10 10,16 * * *" fxkud.js
  * export fxkhd= token&uid&deviceCode 多账号换行或者#分隔
