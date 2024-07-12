@@ -71,15 +71,12 @@ async function userTask(user) {
     //debugLog(`【debug】 这是你的账号数组:\n ${user}`);
     await SignTask(user)
     await wait(2)
-    await liulanjifen(user)
+    await jifenduijihui(user)
+    await wait(2)
+    await jifenduijihui(user)
     await wait(2)
     await lingjihuijihui(user)
     await wait(2)
-    await jifenduijihui(user)
-    await wait(2)
-    await jifenduijihui(user)
-    await wait(2)
-    await liulanjihui1(user)
     await drawTask(user)
     await wait(2)
     await drawTask(user)
@@ -96,6 +93,11 @@ async function SignTask(user) {
     //user: 用户参数, 里面存放ck和账户信息啥的. 进阶可以用类(class)的方法的代替, 效率更高
     //养成良好习惯, 每个方法里面都用try catch包起来, 这样出错了也不影响下一个步骤进行
     try {
+        // 获取当前年份和月份
+        const currentDate = new Date();
+        const year = currentDate.getFullYear(); // 获取年份
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // 获取月份并确保两位数
+
         let urlObject = {
             method: 'post',
             url: 'https://cmallapi.haday.cn/buyer-api/sign/activity/sign',
@@ -103,11 +105,14 @@ async function SignTask(user) {
                 'Host': 'cmallapi.haday.cn',
                 'Content-Type': 'application/json',
                 'Authorization': user.Authorization,
-                'Referer': 'https://servicewechat.com/wx7a890ea13f50d7b6/595/page-frame.html',
+                'Referer': 'https://servicewechat.com/wx7a890ea13f50d7b6/608/page-frame.html',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
             },
             //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
-            body: `{"activity_code":"202404","fill_date":""}`,
+            body: JSON.stringify({
+                "activity_code": year + month,
+                "fill_date": ""
+            }),
         };
 
         let r = await httpPost(urlObject,`签到`)
@@ -134,7 +139,7 @@ async function drawTask(user) {
         let urlObject = {
             method: 'get',
             fn: 'drawTask',
-            url: 'https://cmallapi.haday.cn/buyer-api/lucky/activity/extract?activityCode=jfcj0527',
+            url: 'https://cmallapi.haday.cn/buyer-api/lucky/activity/extract?activityCode=jfcj0627',
             headers: {
                 'Authorization': user.Authorization,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
@@ -162,7 +167,7 @@ async function jifenduijihui(user) {
         let urlObject = {
             method: 'get',
             fn: 'jifenduijihui',
-            url: "https://cmallapi.haday.cn/buyer-api/lucky/activity/redeem?activityCode=jfcj0527",
+            url: "https://cmallapi.haday.cn/buyer-api/lucky/activity/redeem?activityCode=jfcj0627",
             headers: {
                 'Authorization': user.Authorization,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
@@ -170,7 +175,7 @@ async function jifenduijihui(user) {
             //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
             //form: {"isReward":false} Got
         };
-        const result  = await httpGet(urlObject,`兑机会`)
+        const result  = await httpGet(urlObject,`兑换`)
         //console.log(statusCode, headers, result);
         if (result?.member_id) {
             DoubleLog(`🌸账号[${user.index}]积分兑抽奖` + `🕊任务成功，当前机会:[${result.opportunity_num}]🎉`)
@@ -188,7 +193,7 @@ async function lingjihuijihui(user) {
         let urlObject = {
             method: 'put',
             fn: 'lingjihuijihui',
-            url: "https://cmallapi.haday.cn/buyer-api/lucky/task/getLoginOpporturnity/jfcj0527",
+            url: "https://cmallapi.haday.cn/buyer-api/lucky/task/getLoginOpporturnity/jfcj0627",
             headers: {
                 'Authorization': user.Authorization,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
@@ -203,55 +208,6 @@ async function lingjihuijihui(user) {
         } if (result?.code == "700"){
             DoubleLog(`🌸账号[${user.index}]🕊每日领机会 失败:[${result.message}]❌`)
         }else DoubleLog(`🌸账号[${user.index}]🕊每日领机会 领取失败❌`)
-    } catch (e) {
-        //打印错误信息
-        console.log(e)
-    }
-}
-//浏览加机会1
-async function liulanjihui1(user) {
-    try {
-        let urlObject = {
-            method: 'get',
-            fn: 'liulanjihui',
-            url: "https://cmallapi.haday.cn/buyer-api/members/getSaasToken",
-            headers: {
-                'Authorization': user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
-            //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
-            //form: {}
-        };
-        const { statusCode, headers, result } = await request(urlObject)
-        //console.log(statusCode, headers, result);
-        if (result?.code == "200") {
-            DoubleLog(`🌸账号[${user.index}]🕊浏览页面+抽奖机会 领取成功🎉`)
-        } else DoubleLog(`🌸账号[${user.index}]🕊浏览页面+抽奖机会 任务失败❌`)
-    } catch (e) {
-        //打印错误信息
-        console.log(e)
-    }
-}
-//浏览页面加积分
-async function liulanjifen(user) {
-    try {
-        let urlObject = {
-            method: 'get',
-            fn: 'liulanjifen',
-            url: "https://cmallapi.haday.cn/buyer-api/members/identification/visit?code=ZWX",
-            headers: {
-                'uuid': user.uuid,
-                'Authorization': user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
-            //body: `{"isReward":false}`   请求体，get方法没有请求体  httpRequest
-            //form: {}
-        };
-        const { statusCode, headers, result } = await request(urlObject)
-        //console.log(statusCode, headers, result);
-        if (result?.code == "200") {
-            DoubleLog(`🌸账号[${user.index}]🕊浏览页面+积分 领取成功🎉`)
-        } else DoubleLog(`🌸账号[${user.index}]🕊浏览页面+积分 浏览任务失败❌`)
     } catch (e) {
         //打印错误信息
         console.log(e)
