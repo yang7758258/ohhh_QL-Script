@@ -62,6 +62,12 @@ async function main() {
 // ======================================开始任务=========================================
 class run {
     constructor(user) {
+        this.headers = 
+            {
+                "qm-from": "wechat",
+                "qm-user-token": user.Authorization,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+            }
         
     }
 async  userTask(user) {
@@ -70,7 +76,6 @@ async  userTask(user) {
     await wait(2)
     await this.account(user)
     await this.userSignStatistics(user)
-
 }
 // =============================================================================================================================
 //签到
@@ -80,11 +85,7 @@ async  userTask(user) {
             let urlObject = {
                 method: 'post',
                 url: `https://webapi.qmai.cn/web/cmk-center/sign/takePartInSign`,
-                headers: {
-                    "qm-from": "wechat",
-                    "qm-user-token": user.Authorization,
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-                },
+                headers: this.headers,
                 data:{
                     "activityId": "983701274523176960",
                     "appid": "wx3423ef0c7b7f19af"
@@ -114,11 +115,7 @@ async  account(user) {
         let urlObject = {
             method: 'post',
             url: `https://webapi.qmai.cn/web/mall-apiserver/integral/user/points-info`,
-            headers: {
-                "qm-from": "wechat",
-                "qm-user-token": user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
+            headers: this.headers,
             data: {
                 "appid": "wx3423ef0c7b7f19af"
             }
@@ -139,36 +136,34 @@ async  account(user) {
     }
 }
 // 查询用户签到天数及奖励
-    async userSignStatistics(user) {
-        try {
-            DoubleLog(🕊账号[${user.index}] 开始查询连续签到情况...);
-            let urlObject = {
-                method: 'post',
-                url: https://webapi.qmai.cn/web/cmk-center/sign/userSignStatistics,
-                headers: {
-                    "qm-from": "wechat",
-                    "qm-user-token": user.Authorization,
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-                },
-                data: {
-                    "activityId": "983701274523176960",
-                    "appid": "wx3423ef0c7b7f19af"
-                }
+async userSignStatistics(user) {
+    try {
+        DoubleLog(`🕊账号[${user.index}] 开始查询连续签到情况...`);
+        let urlObject = {
+            method: 'post',
+            url: `https://webapi.qmai.cn/web/cmk-center/sign/userSignStatistics`,
+            headers: {
+                "qm-from": "wechat",
+                "qm-user-token": user.Authorization,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+            },
+            data: {
+                "activityId": "983701274523176960",
+                "appid": "wx3423ef0c7b7f19af"
             }
-            let { data: result } = await axios.request(urlObject)
-            // console.log('userSignStatistics ', result);
-            if (result?.status == true) {
-                //打印签到结果
-                DoubleLog(🕊账号[${user.index}] 当前连续签到[${result.data.signDays}]天，下一阶段奖品[${result.data.nextRewardList[0].rewardList[0].rewardName}]，还需要签到[${result.data.nextSignDays}]天🎉);
-            } else {
-                DoubleLog(🕊账号[${user.index}] 连续签到查询失败:${result.message}🚫)
-            }
-
-
-        } catch (e) {
-            console.log(e);
         }
+        let { data: result } = await axios.request(urlObject)
+        // console.log('userSignStatistics ', result);
+        if (result?.status == true) {
+            //打印签到结果
+            DoubleLog(`🕊账号[${user.index}] 当前连续签到[${result.data.signDays}]天，下一阶段奖品[${result.data.nextRewardList[0].rewardList[0].rewardName}]，还需要签到[${result.data.nextSignDays}]天🎉`);
+        } else {
+            DoubleLog(`🕊账号[${user.index}] 连续签到查询失败:${result.message}🚫`)
+        }
+    } catch (e) {
+        console.log(e);
     }
+}
 }
 /**
  * =========================================================发送消息=============================================
