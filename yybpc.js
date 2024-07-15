@@ -108,18 +108,18 @@ async  userTask(user) {
         }
     }
 // 查询用户签到天数及奖励
-    async userSignStatistics(user) {
-        try {
-            DoubleLog(🕊账号[${user.index}] 开始查询连续签到情况...);
-            let urlObject = {
-                method: 'post',
-                url: https://webapi.qmai.cn/web/cmk-center/sign/userSignStatistics,
-                headers: {
+async userSignStatistics(user) {
+     try {
+        DoubleLog(🕊账号[${user.index}] 开始查询连续签到情况...);
+        let urlObject = {
+            method: 'post',
+            url: https://webapi.qmai.cn/web/cmk-center/sign/userSignStatistics,
+            headers: {
                     "qm-from": "wechat",
                     "qm-user-token": user.Authorization,
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
                 },
-                data: {
+            data: {
                     "activityId": "983701274523176960",
                     "appid": "wx3423ef0c7b7f19af"
                 }
