@@ -69,7 +69,7 @@ async  userTask(user) {
     await this.SignTask(user)
     await wait(2)
     await this.account(user)
-    //await this.userSignStatistics(user)
+    await this.userSignStatistics(user)
 
 }
 // =============================================================================================================================
