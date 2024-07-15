@@ -40,12 +40,12 @@ async function main() {
     for (let ck of user_ck) {
         if (!ck) continue //跳过空行
         let ck_info = ck.split('&')
-        let Authorization = ck_info[0] 
+        let token = ck_info[0] 
         //let uid = ck_info[0]
         //let deviceCode = ck_info[2]
         let user = {
             index: index,
-            Authorization, 
+            token, 
             //uid,
             //deviceCode,
         }
@@ -62,15 +62,15 @@ async function main() {
 // ======================================开始任务=========================================
 class run {
     constructor(user) {
-        this.headers = {
-                "qm-from": "wechat",
-                "qm-user-token": user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            }
         
     }
 async  userTask(user) {
     console.log(`\n========= 账号[${user.index}]开始任务 =========`)
+    this.headers= {
+        "qm-from": "wechat",
+        "qm-user-token": user.token,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
+    }
     await this.SignTask(user)
     await wait(2)
     await this.account(user)
@@ -272,7 +272,7 @@ function getVersion(scriptUrl, timeout = 3 * 1000) {
                 const regex = /scriptVersionNow\s*=\s*(["'`])([\d.]+)\1/;
                 const match = data.match(regex);
                 const scriptVersionLatest = match ? match[2] : "";
-                DoubleLog(`\n当前使用版本:[${scriptVersionNow}]➡️➡️➡️云端☁️版本:[${scriptVersionLatest}]`);
+                DoubleLog(`\n当前版本:[${scriptVersionNow}]>>>>>云端☁️版本:[${scriptVersionLatest}]`);
             } catch (e) {
                 $.logErr(e, resp);
             }
