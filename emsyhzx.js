@@ -133,7 +133,7 @@ async  sign(user) {
         if (result?.code == '000000') {
                 //打印签到结果
             DoubleLog(`🕊账号[${user.index}] 签到成功：获得[${result.info[0].prizeSize}]积分🎉`);
-            this.mist = result.data.spanSumDays
+            //this.mist = result.data.spanSumDays
         }else{
             DoubleLog(`🕊账号[${user.index}] 签到失败:${result.msg}⛔`)
         }
