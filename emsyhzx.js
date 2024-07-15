@@ -4,7 +4,7 @@
  * Author: Mist
  * Date: 2024-07-16
  * cron "0 9 * * *" emsyhzx.js
- * export emsyhzx= userId&openId 多账号换行或者#分隔
+ * export emsyhzx= openId 多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('EMS邮惠中心') 
