@@ -22,6 +22,7 @@
 |雀巢会员俱乐部|[Qchyjlb](https://github.com/yang7758258/ohhh_QL-Script/blob/main/qchyjlb.js)|✅(2024/07/08)|✅|
 |丰信客户端|[Fxkhd](https://github.com/yang7758258/ohhh_QL-Script/blob/main/fxkhd.js)|✅(2024/07/09)|✅|
 |顾家家居|[Gjjj](https://github.com/yang7758258/ohhh_QL-Script/blob/main/gjjj.js)|✅(2024/07/14)|✅|
+|EMS邮惠中心|[Emsyhzx](https://github.com/yang7758258/ohhh_QL-Script/blob/main/emsyhzx.js)|✅(2024/07/16)|✅|
 
 
 
