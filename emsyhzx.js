@@ -2,7 +2,7 @@
  * EMS邮惠中心 签到
  * Emsyhzx
  * Author: Mist
- * Date: 2024-07-15
+ * Date: 2024-07-16
  * cron "0 9 * * *" emsyhzx.js
  * export emsyhzx= userId&openId 多账号换行或者#分隔
  */
