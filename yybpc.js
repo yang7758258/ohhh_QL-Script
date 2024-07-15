@@ -62,8 +62,7 @@ async function main() {
 // ======================================开始任务=========================================
 class run {
     constructor(user) {
-        this.headers = 
-            {
+        this.headers = {
                 "qm-from": "wechat",
                 "qm-user-token": user.Authorization,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
@@ -142,11 +141,7 @@ async userSignStatistics(user) {
         let urlObject = {
             method: 'post',
             url: `https://webapi.qmai.cn/web/cmk-center/sign/userSignStatistics`,
-            headers: {
-                "qm-from": "wechat",
-                "qm-user-token": user.Authorization,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) XWEB/9129',
-            },
+            headers: this.headers,
             data: {
                 "activityId": "983701274523176960",
                 "appid": "wx3423ef0c7b7f19af"
