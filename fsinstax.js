@@ -124,7 +124,7 @@ async  userTask(user) {
         try {
             let urlObject = {
                 method: 'post',
-                url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/draw-activities/42/draw`,
+                url: `https://instax.app.xcxd.net.cn/api/user/${user.uid}/draw-activities/44/draw`,
                 headers: {
                     'Host': 'instax.app.xcxd.net.cn',
                     'Authorization': user.Authorization,
