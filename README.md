@@ -23,6 +23,7 @@
 |丰信客户端|[Fxkhd](https://github.com/yang7758258/ohhh_QL-Script/blob/main/fxkhd.js)|✅(2024/07/09)|✅|
 |顾家家居|[Gjjj](https://github.com/yang7758258/ohhh_QL-Script/blob/main/gjjj.js)|❌(2024/07/14)|✅|
 |EMS邮惠中心|[Emsyhzx](https://github.com/yang7758258/ohhh_QL-Script/blob/main/emsyhzx.js)|✅(2024/07/16)|✅|
+|冷酸灵牙膏|[Lslyg](https://github.com/yang7758258/ohhh_QL-Script/blob/main/lslyg.js)|✅(2024/08/31)|✅|
 
 
 
