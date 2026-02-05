@@ -2,12 +2,13 @@
  * 麦斯威尔福利社
  * mswefls
  * Author: Mist
- * Date: 2024-06-20
+ * Date: 2024-06-18
  * cron "10 12 * * *" mswefls.js
- * export mswefls= openid     多账号换行或者#分隔
+ * export mswefls= token     多账号换行或者#分隔
  */
 // ============================================================================================================
 const $ = new Env('vx麦斯威尔福利社') 
+const { ifError } = require('assert')
 const axios = require('axios')
 const md5 = require('md5')
 const env_name = 'mswefls' //环境变量名字
@@ -18,8 +19,8 @@ let scriptVersionNow = "1.0.0";//脚本版本号
 let msg = "";
 // ==================================异步顺序==============================================================================
 !(async () => {
-    await getNotice();  //远程通知
-    await getVersion("yang7758258/ohhh154@main/mswefls.js");
+    //await getNotice();  //远程通知
+    //await getVersion("yang7758258/ohhh154@main/mswefls.js");
     await main();//主函数
     await SendMsg(msg); //发送通知
 
@@ -65,10 +66,29 @@ async function userTask(user) {
     await wait (1)
     await UserShare(user)
     await wait (1)
-    for (let i = 0; i < 3; i++) {
-        await Watering(user);
-        await wait (2)
+    user.leftwater = 0;
+    user.msg = null; // 初始化msg变量
+    try {
+        await Watering(user); // 第一次浇水
+    } catch (error) {
+        DoubleLog(`账号[${user.index}]首次浇水失败: ${error.message}`);
+        await GetUserPoint(user);
+        return; // 直接返回，不再执行后续浇水逻辑
     }
+    
+    await wait (1)
+    
+    // 继续浇水直到剩余水滴少于等于20
+    while (user.leftwater > 20) {
+        try {
+            await Watering(user);
+            await wait(1); // 每次浇水后等待1秒
+        } catch (error) {
+            console.log(`账号[${user.index}]浇水过程出错，停止执行: ${error.message}`);
+            break; // 出现错误时跳出循环
+        }
+    }
+    
     await GetUserPoint(user)
 
 }
@@ -240,15 +260,19 @@ async function Watering(user) {
         let { data: result} = await axios.request(urlObject)
         if (result?.state == true) {
             //打印签到结果
-            DoubleLog(`🌸账号[${user.index}]` + `🕊浇水-成功${result.msg}🎉`);
+            DoubleLog(`🌸账号[${user.index}]` + `🕊浇水-成功 剩余水滴${result.data1.canUseWaters}🎉`);
+            user.leftwater = result.data1.canUseWaters
         }else{
             DoubleLog(`🌸账号[${user.index}]浇水-失败:${result.msg}❌`)
+            user.msg = result.msg
+            throw new Error(result.msg); // 失败时抛出错误
         }
             
     } catch (e) {
         //打印错误信息
             console.log('以下是报错输出：');
             console.log(e.response.data);
+            throw e; // 重新抛出错误让外层捕获
     }
 }
 async function GetUserPoint(user) {
