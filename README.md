@@ -3,35 +3,20 @@
 |:----------------------:|:----------------------------------------------------------------------------------------:|:-------------:|:-----------:|
 |zippo签到| [Zippo](https://github.com/yang7758258/ohhh154/blob/main/zippo.js) | ✅(2024/05/30) | ✅|
 |好奇车生活| [Hqcsh](https://github.com/yang7758258/ohhh154/blob/main/hqcsh.js) | ✅(2024/06/02) |✅|
-| 海天美味馆|[Htmwg](https://github.com/yang7758258/ohhh154/blob/main/htmwg.js)|✅(2024/06/03)|✅|
+|海天美味馆|[Htmwg](https://github.com/yang7758258/ohhh154/blob/main/htmwg.js)|✅(待更新)|❌|
 |仰韶会员俱乐部|[Yshyjlb](https://github.com/yang7758258/ohhh154/blob/main/yshyjlb.js)|✅(2024/06/08)|✅|
 |健达福利社|[Jdfls](https://github.com/yang7758258/ohhh154/blob/main/jdfls.js)|✅(2024/06/09)|✅|
 |富士instax|[Fsinstax](https://github.com/yang7758258/ohhh154/blob/main/fsinstax.js)|✅(2024/06/12)|✅|
-|麦斯威尔福利社|[Mswefls](https://github.com/yang7758258/ohhh154/blob/main/mswefls.js)|✅(2024/06/20)|✅|
-|日清体验馆|[Rqtyg](https://github.com/yang7758258/ohhh154/blob/main/rqtyg.js)|✅(2024/06/21)|✅|
-|Babycare|[Babycare](https://github.com/yang7758258/ohhh154/blob/main/babycare.js)|✅(2024/06/21)|✅|
-|兴攀农场|[Xpnc](https://github.com/yang7758258/ohhh154/blob/main/xpnc.js)|✅(2024/06/25)|✅|
-|植物星球|[Zwxq](https://github.com/yang7758258/ohhh154/blob/main/zwxq.js)|✅(2024/06/25)|✅|
-|诸暨西施眼|[Zjxsy](https://github.com/yang7758258/ohhh154/blob/main/zjxsy.js)|✅(2024/06/28)|✅|
-|爷爷不泡茶|[Yybpc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/yybpc.js)|✅(2024/07/02)|✅|
-|毛铺草本荟|[Mpcbh](https://github.com/yang7758258/ohhh_QL-Script/blob/main/mpcbh.js)|✅(2024/07/03)|✅|
-|逢三得利吧|[Fsdlb](https://github.com/yang7758258/ohhh_QL-Script/blob/main/fsdlb.js)|✅(2024/07/05)|✅|
-|雅迪星球|[Ydxq](https://github.com/yang7758258/ohhh_QL-Script/blob/main/ydxq.js)|✅(2024/07/07)|✅|
-|国乐酱酒|[Gljj](https://github.com/yang7758258/ohhh_QL-Script/blob/main/gljj.js)|✅(2024/07/07)|✅|
-|库迪咖啡|[Kdcoffer](https://github.com/yang7758258/ohhh_QL-Script/blob/main/%E5%BA%93%E8%BF%AA%E5%92%96%E5%95%A1.js)|✅(2024/07/08)|✅|
-|雀巢会员俱乐部|[Qchyjlb](https://github.com/yang7758258/ohhh_QL-Script/blob/main/qchyjlb.js)|✅(2024/07/08)|✅|
-|丰信客户端|[Fxkhd](https://github.com/yang7758258/ohhh_QL-Script/blob/main/fxkhd.js)|✅(2024/07/09)|✅|
-|顾家家居|[Gjjj](https://github.com/yang7758258/ohhh_QL-Script/blob/main/gjjj.js)|❌(2024/07/14)|❌|
-|EMS邮惠中心|[Emsyhzx](https://github.com/yang7758258/ohhh_QL-Script/blob/main/emsyhzx.js)|✅(2024/07/16)|✅|
-|冷酸灵牙膏|[Lslyg](https://github.com/yang7758258/ohhh_QL-Script/blob/main/lslyg.js)|✅(2024/08/31)|✅|
-
+|日清体验馆|[Rqtyg](https://github.com/yang7758258/ohhh154/blob/main/rqtyg.js)|✅(待更新)|❌|
+|爷爷不泡茶|[Yybpc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/yybpc.js)|✅(待更新)|❌|
+|麦斯威尔福利社|[Mswefls](https://github.com/yang7758258/ohhh154/blob/main/mswefls.js)|✅(2026/02/5)|✅|
 
 
 
 ------
 ### [群组直达|      我与我周旋久，宁做我](https://t.me/Mist154)
 ### [频道直达|      夜色四合，平安喜樂](https://t.me/Mist153)
-### 我们2025再见.....
+### See You.
 ### 声明:
 - 这里的脚本只是自己学习 js 的一个实践.
 - 仅用于测试和学习研究，禁止用于商业用途，不能保证其合法性，准确性，完整性和有效性，请根据情况自行判断.
