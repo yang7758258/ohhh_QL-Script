@@ -10,6 +10,7 @@
 |日清体验馆|[Rqtyg](https://github.com/yang7758258/ohhh154/blob/main/rqtyg.js)|✅(待更新)|❌|
 |爷爷不泡茶|[Yybpc](https://github.com/yang7758258/ohhh_QL-Script/blob/main/yybpc.js)|✅(待更新)|❌|
 |麦斯威尔福利社|[Mswefls](https://github.com/yang7758258/ohhh154/blob/main/mswefls.js)|✅(2026/02/5)|✅|
+|Keep奖牌|[Keep](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js)|✅(2026/02/6)|✅|
 
 
 
