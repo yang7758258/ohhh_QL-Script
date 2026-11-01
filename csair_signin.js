@@ -12,147 +12,7 @@
  *  适配活动：天天签到 activityId=310（2026-11-01 ~ 2026-11-30，每月换一期）
  *
  * ----------------------------------------------------------------------------
- *  【这条路是怎么走通的】
- * ----------------------------------------------------------------------------
- *  432 条抓包 → 剔除埋点（app.csair.com/gs.gif）、图片、地图 SDK → 剩下三类：
- *    ① 小程序登录   wxapi.csair.com/mini/api/login/*
- *    ② H5 签到页    wxapi.csair.com/h5/sign/  (React + webpack)
- *    ③ 活动后端     wxapi.csair.com/marketing-tools/*
- *  从 ③ 的 H5 包里挖出完整接口表（main.bdad0e58.chunk.js 模块 61，48 个接口全表），
- *  再用真号把「登录 → 换证 → 活动查询 → 签到 → 对账」整条链路跑通并逐字段核对。
- *
- * ----------------------------------------------------------------------------
- *  一、登录：不是微信 OAuth，是「会员号 + 密码 + 小程序身份」
- * ----------------------------------------------------------------------------
- *    POST /mini/api/login/memberLogin?appid=wx729238547ac7a14c&wxchannel=wxopen&envVersion=release
- *
- *    必带头（少一个就 400 / 10400 / W00000）：
- *      content-type: application/json
- *      sessionid:    wxopen_<36 位 UUID><35 位 十六进制>   ← ★ 网关会话，见第二节
- *      unnecessaryparam: <openId>                          ← 名字叫 unnecessary，实则必须
- *      channel: ecsair
- *
- *    包体就是**明文 JSON**（抓包里那串 base64 是外层工具二次编码，服务端要明文）：
- *      {
- *        "userId":   "手机号",          ★ 账号
- *        "password": "密码",            ★ 密码（明文，没有再套 RSA/AES）
- *        "openId":   "oJ5U...",         ★ 小程序 openid（必须是本小程序的）
- *        "unionId":  "oqyA...",         ★ 开放平台 unionid
- *        "appId":    "wx729238547ac7a14c",
- *        "channel":  "wxopen",  "entrance": "WXMPG", "activity": "WXMPG",
- *        "unitChannel": "MAAAB4", "activityChannel": "XCX1",
- *        "formId":   "requestFormId:fail deprecated",   ← 历史遗留，原样带
- *        "loginType": 0, "clientType": "microsoft microsoft"
- *      }
- *
- *    逐字段验证（全表见 REPORT 第二、三节）：
- *      正确 openId + 正确 unionId        → memberList[0].token        ✅
- *      正确 openId + 空 unionId          → 22306 参数不可以为空
- *      正确 openId + 乱码 unionId        → 22314 登录失败
- *      H5 的 openid + 正确 unionId       → 22314 登录失败
- *      随机 openId + 正确 unionId        → 22314 登录失败
- *    ⇒ openId / unionId 与账号是绑死的，不能互换、不能伪造。
- *
- *    风控字段 riskControlDto.ydFingerprint / tdFingerprint **可以整段省略**，
- *    onRiskControl 置 0 也照过 —— 本脚本据此保持包体最小。
- *
- * ----------------------------------------------------------------------------
- *  二、sessionid：这是全流程唯一的硬门槛
- * ----------------------------------------------------------------------------
- *    形状：wxopen_04b0809a-4cfd-41b3-952c-1fd7ef7cbe250e4b4145-adcc-4acc-b23c-e4c54f1fcaad
- *           └ wxopen_ + 36 位 UUID + 35 位十六进制（79 字符）
- *
- *    它**不是客户端能自造的**。实测：
- *      · 随便生成 wxopen_<uuid>-<uuid>        → {"code":"W00000","message":"invalid session"}
- *      · 抓包原值改掉最后 1 个字符             → invalid session（说明服务端按登记表比对，不是格式校验）
- *      · 先用随机值打公开接口「预热」再登录     → 仍 invalid session（预热不会登记）
- *      · 无 sessionid 直接打 memberLogin        → invalid session
- *      · /mini/api/* 下任何未登记路径           → 同样是 invalid session（网关层统一拦）
- *    ⇒ 网关维护一份「小程序会话登记表」，只能由微信小程序客户端（wx.login 流程）产生。
- *
- *    好消息：它**活得比想象久**，且不绑 IP、可与多 token 共存（实测同一 sessionid 20 分钟后仍有效，
- *    同一账号两次登录产生的 token 同时有效）。所以本脚本采用双通道（见第三节），
- *    把「登录」降级为可选步骤。
- *
- * ----------------------------------------------------------------------------
- *  三、换证与双通道（★ 本项目最关键的工程决策）
- * ----------------------------------------------------------------------------
- *    memberList[0].token ≈ 1D364E4632997d49DA48B8Aa2C927DCB08952MTc5MzUxMjc0Mww...
- *    形状：32 位 hex（UUID 去横线）+ 'M' + base64(13 位毫秒时间戳) = 94 字符
- *
- *    登录成功后，H5 侧把它写进两个 cookie（home.33d46c85.chunk.js 明写）：
- *      TOKEN        ← 小程序域
- *      cs1246643sso ← H5 域 SSO 票（cs1246643 是南航 SSO 系统编号）
- *    实测二分（REPORT 表 3）：**只要 cs1246643sso 一个 cookie 就能过 marketing-tools 鉴权**；
- *      · cs1246643sso alone          → 0000 成功
- *      · TOKEN alone                 → S0001 登录凭证为空
- *      · TOKEN + uid + channel       → S0001
- *      · 全部 cookie 去掉 cs1246643sso → S0001
- *
- *    ⇒ 于是有了两条通道：
- *      通道 A（CK，推荐上生产）：直接拿 cs1246643sso 签到，不碰登录、不碰 sessionid。
- *      通道 B（账号密码，本项目逆向主体）：手机号+密码+openId+unionId+sessionid 全链路登录。
- *    本脚本两条都实现：给了 CSAIR_CK 走 A，否则走 B；B 成功后会把拿到的 CK 打印出来，
- *    便于下一天改用 A（A 不再依赖 sessionid，最稳）。
- *
- * ----------------------------------------------------------------------------
- *  四、签到：只有三个动作，没有签名
- * ----------------------------------------------------------------------------
- *    ① POST /marketing-tools/activity/load
- *         {"activityType":"sign","channel":"mini"}
- *       → data.activityDtoList[0].signActivity
- *           activityId          310
- *           status              enable
- *           startDate/endDate   本期起止（每月一期，换期自动跟随）
- *           signTimeRange       "08:00:00-23:59:59"  ★ 08:00 之前签不了
- *           needIdentify        true                 ← 需实名
- *           pinpointAwardConfig 精准奖励日历（哪天几里程）
- *       同响应还带 aid / uid / oneid / ffpTier / identifyStatus
- *
- *    ② POST /marketing-tools/activity/join
- *         {"activityType":"sign","channel":"mini","entrance":1}
- *       → 成功：{"respCode":"0000","data":{"code":"00A1",
- *                "result":"恭喜您，获得11月1日签到奖励，奖励将于72小时内到账。","autoSend":true}}
- *       → 重复：{"respCode":"S2001","respMsg":"今天已经签到，请明天再来哦！"}
- *       → 无票：{"respCode":"S0001","respMsg":"登录凭证为空"}
- *      ★ 没有 signature、没有 nonce、没有 timestamp、没有验证码、没有设备指纹。
- *
- *    ③ GET /marketing-tools/sign/getSignCalendarNew?startQueryDate=YYYYMM01&endQueryDate=YYYYMM<末日>
- *       → dateList      ["2026-11-01", ...]
- *         awardDisplay  JSON 字符串，每天一条 {dateOfAward, prizeType, num, isGain,...}
- *       签到前后各打一次，diff 出「今天是否真的落袋」，不轻信接口的嘴。
- *
- * ----------------------------------------------------------------------------
- *  五、奖励构成（2026-11 期实测）
- * ----------------------------------------------------------------------------
- *    日常   每天 8 里程（pinpointAwardConfig.mileage）
- *    里程碑 11-15 → 15 里程，11-28 → 28 里程
- *    连签   第 3/6/9/12/15 天各 1 次抽奖机会（getUserAwardContent）
- *    到账   activity/join 返回 autoSend=true，72 小时内自动入账，无需再调领取接口
- *           （awardList 里先 waitReceive，之后自动转已发）
- *    对账   GET /marketing-tools/sign/rightsModule → data.usableMileage
- *
- * ----------------------------------------------------------------------------
- *  六、接口清单（H5 包模块 61 全表，本脚本用到标 ★）
- * ----------------------------------------------------------------------------
- *    ★ /marketing-tools/activity/load              活动装载
- *    ★ /marketing-tools/activity/join              签到
- *    ★ /marketing-tools/sign/getSignCalendarNew    签到日历
- *    ★ /marketing-tools/award/awardList            奖励流水
- *    ★ /marketing-tools/sign/rightsModule          可用里程
- *    ★ /mini/api/login/memberLogin                 会员号密码登录
- *      /marketing-tools/sign/getSignProgress       连签进度
- *      /marketing-tools/sign/queryTaskList         任务（本期返回 null）
- *      /marketing-tools/sign/getUserAwardContent   连签奖励内容
- *      /marketing-tools/sign/getSecretKey          秘钥（前端没用）
- *      /marketing-tools/sign/repairSign            补签
- *      /marketing-tools/sign/saveSignRemindUser    签到提醒
- *      /marketing-tools/sign/receiveReward         领奖
- *      /marketing-tools/sign/createOrder 等        金币兑换整套
- *      /mini/api/login/getUserDecryptInfo          反解身份证/卡号（敏感，本脚本不调用）
- *
- * ----------------------------------------------------------------------------
- *  七、环境变量
+ * 环境变量
  * ----------------------------------------------------------------------------
  *    CSAIR_CK        ★通道A   cs1246643sso 的值（多账号换行；也接受 "cs1246643sso=xxx" 整段）
  *    CSAIR_ACCOUNT   ★通道B   手机号#密码#openId#unionId[#sessionid]
@@ -169,11 +29,11 @@
  *    命令行：task csair_signin.js probe
  *
  * ----------------------------------------------------------------------------
- *  八、免责
+ * 免责
  * ----------------------------------------------------------------------------
  *    1. 本脚本只把「每天点一次签到按钮」自动化，不刷量、不并发、不改设备指纹。
  *    2. 请合理设置频率：一天一次，排在 08:10 之后（活动 08:00 才开门）。
- *    3. 账号密码/CK 明文存在青龙环境变量里，请自行做好面板访问控制。
+ *   
  * ============================================================================
  * new Env('南方航空签到');
  * cron: 22 8 * * *
