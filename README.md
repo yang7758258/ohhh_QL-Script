@@ -9,6 +9,7 @@
 |麦斯威尔福利社|[Mswefls](https://github.com/yang7758258/ohhh154/blob/main/mswefls.js)|✅(2026/02/5)|✅|
 |Keep奖牌|[Keep](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js)|✅(2026/02/6)|✅|
 |顺丰速运|[sfsy](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js)|✅(2026/10/20)|✅|
+|南方航空|[CSAIR](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/csair_signin.js)|✅(2026/11/01)|✅|
 
 
 
