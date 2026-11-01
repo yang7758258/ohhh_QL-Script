@@ -1,3 +1,10 @@
+/* ---------------------------------------------------------------------------
+ *  项目名称：推送通知模块（第三方公共件）
+ *  脚本文件：sendNotify.js
+ *  更新说明：
+ *    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+ * ---------------------------------------------------------------------------
+ */
 const querystring = require('node:querystring');
 const { request: undiciRequest, ProxyAgent, FormData } = require('undici');
 const timeout = 15000;

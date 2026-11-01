@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+# ---------------------------------------------------------------------------
+#  项目名称：中国联通（全功能签到 + 任务中心）
+#  脚本文件：chinaUnicom.py
+#  更新说明：
+#    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+# ---------------------------------------------------------------------------
 """
 中国联通 Python 版 v1.0.5
 new Env('中国联通');
@@ -3478,7 +3484,7 @@ class UserService:
             return None
 
     def addToBlacklist_sec(self):
-        phone_number = "13088888888"
+        phone_number = "13000000000"
         res = self.operateBlacklist_sec(phone_number, 0)
         success_codes = ['0000', 0]
         if res and (res.get('code') in success_codes or res.get('msg') == '成功'):
@@ -3510,7 +3516,7 @@ class UserService:
                 "auth-sa-token": self.sec_token,
                 "clientType": "uasp_unicom_applet"
             }
-            data = { "tagPhoneNo": "13088330789", "tagIds": [26], "status": 0, "productId": "91311616" }
+            data = { "tagPhoneNo": "13000000000", "tagIds": [26], "status": 0, "productId": "91311616" }
             self.session.post(url, json=data, headers=headers)
             self.log("安全管家: 执行号码标记。")
         except Exception as e:
@@ -3524,7 +3530,7 @@ class UserService:
                 "auth-sa-token": self.sec_token,
                 "clientType": "uasp_unicom_applet"
             }
-            data = { "addressBookDTOList": [{ "addressBookPhoneNo": "13088888888", "addressBookName": "水水" }], "productId": "91311616", "opType": "1" }
+            data = { "addressBookDTOList": [{ "addressBookPhoneNo": "13000000000", "addressBookName": "测试" }], "productId": "91311616", "opType": "1" }
             self.session.post(url, json=data, headers=headers)
             self.log("安全管家: 执行同步通讯录。")
         except Exception as e:
@@ -4167,7 +4173,7 @@ class UserService:
             'osversion': 'Android12',
             'clientallid': '000000100000000000058.0.2.1225',
             'display': '2400_1080',
-            'ip': '192.168.3.24',
+            'ip': '0.0.0.0',
             'nettypename': 'wifi',
             'version': '802',
             'versionname': '8.0.2',

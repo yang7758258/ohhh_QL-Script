@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ---------------------------------------------------------------------------
+#  项目名称：中国联通（账号密码自动登录）
+#  脚本文件：unicom_auto_login.py
+#  更新说明：
+#    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+# ---------------------------------------------------------------------------
 """
 中国联通 App 账号密码全自动登录 —— 过腾讯点选验证码，拿 ecs_token
 
@@ -102,7 +108,7 @@ UA_APP = ("ChinaUnicom4.x/13.1 (com.chinaunicom.mobilebusiness; build:14; iOS 26
 UA_H5 = ("Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 "
          "(KHTML, like Gecko)  unicom{version:iphone_c@13.0100};ltst;OSVersion/26.6.1")
 
-ANTICAP_BASE = os.environ.get("ANTICAP_URL", "http://110.41.61.128:6688")
+ANTICAP_BASE = os.environ.get("ANTICAP_URL", "")
 ANTICAP_USER = os.environ.get("ANTICAP_USER", "admin")
 ANTICAP_PASS = os.environ.get("ANTICAP_PASS", "")
 
@@ -202,7 +208,7 @@ def post_login(s, mobile, password, result_token=None):
         "deviceId": DEVICE_ID,
         "simOperator": "--,--,65535,65535,--@--,--,65535,65535,--", "netWay": "wifi",
         "deviceCode": DEVICE_CODE, "uniqueIdentifier": UNIQUE_ID, "deviceOS": "26.6.1",
-        "latitude": "", "version": "iphone_c@13.0100", "pip": "192.168.10.15",
+        "latitude": "", "version": "iphone_c@13.0100", "pip": "0.0.0.0",
         "isFirstInstall": "0", "remark4": "", "keyVersion": "2", "longitude": "",
         "simCount": "1",
         "mobile": rsa_enc(mobile + rand6()),
@@ -630,7 +636,7 @@ def login(mobile, password, headless=True, max_try=4):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mobile", default=os.environ.get("UNICOM_MOBILE", "18569788363"))
+    ap.add_argument("--mobile", default=os.environ.get("UNICOM_MOBILE", ""))
     ap.add_argument("--password", default=os.environ.get("UNICOM_PASSWORD", ""))
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--show", action="store_true")

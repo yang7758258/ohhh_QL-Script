@@ -1,3 +1,10 @@
+/* ---------------------------------------------------------------------------
+ *  项目名称：中国联通（签到 + 任务中心）
+ *  脚本文件：unicom_signin.js
+ *  更新说明：
+ *    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+ * ---------------------------------------------------------------------------
+ */
 /**
  * ============================================================================
  *  中国联通（Unicom）· 每日签到 + 任务中心（青龙面板版 · 纯 HTTP 无依赖）
@@ -159,10 +166,34 @@ const ENV_QL_PASS = 'unicom_ql_pass';  // 青龙密码
 const ENV_CMF = 'unicom_cmf';           // on/off：乘风破浪2026 云盘活动（默认 on）
 const ENV_CMF_TEST = 'unicom_cmf_test'; // on：云盘活动只查询不执行
 const ENV_CMF_SRC = 'unicom_cmf_src';   // lt_cmf2026.py 路径（默认自动查找）
+const ENV_ALL = 'unicom_all';           // on/off：全部扩展任务（默认 on）
+const ENV_ALL_SKIP = 'unicom_all_skip'; // 跳过指定模块，逗号分隔（enable_ 前缀可省）
+const ENV_ALL_SRC = 'unicom_all_src';   // chinaUnicom.py 路径（默认自动查找）
+const ENV_WOREAD = 'unicom_woread';     // on/off：联通阅读（默认 on）
+
+// ── 全部扩展任务（chinaUnicom.py 的 10 个模块）──────────────────────
+const ALL_WRAPPER = path.join(__dirname, '..', '附带脚本', 'unicom_tasks.py');
+const ALL_WRAPPER_ALT = path.join(__dirname, 'unicom_tasks.py');
+
+// 模块中文名，用于日志/推送
+const ALL_MODULES = {
+    sign: '首页签到',
+    ltzf: '联通祝福',
+    ttlxj: '天天领现金',
+    market: '权益超市',
+    woread: '联通阅读',
+    aiting: '联通爱听',
+    security: '安全管家',
+    ltyp: '联通云盘',
+    wostore: '沃云手机',
+    regional: '区域专区',
+};
 
 // ── 乘风破浪2026（联通云盘）─────────────────────────────────────────
-const CMF_WRAPPER = path.join(__dirname, 'unicom_cmf.py');
-const CMF_TOKEN_CACHE = path.join(__dirname, 'unicom_token_cache.json');
+const CMF_WRAPPER = () => resolveFile('unicom_cmf.py');
+const CMF_TOKEN_CACHE = resolveFile('unicom_token_cache.json',
+    path.join(__dirname, '..', 'unicom_token_cache.json'))
+    || path.join(__dirname, 'unicom_token_cache.json');
 
 /** 签到区两个域 */
 const HOST_ACT = 'https://act.10010.com';
@@ -422,7 +453,8 @@ function autoLogin(mobile, password) {
     if (process.env[ENV_LOGIN_SCRIPT]) cands.push(process.env[ENV_LOGIN_SCRIPT]);
     cands.push(
         path.join(__dirname, 'unicom_auto_login.py'),
-        path.join(__dirname, '..', 'unicom_work', 'unicom_auto_login.py'),
+        path.join(__dirname, '..', '附带脚本', 'unicom_auto_login.py'),
+        path.join('/ql/data/scripts', 'unicom_auto_login.py'),
         'D:\\Desktop\\工作区\\unicom_work\\unicom_auto_login.py',
     );
     const script = cands.find((p) => { try { return fs.existsSync(p); } catch (e) { return false; } });
@@ -465,7 +497,7 @@ function syncToQinglong(mobile, token) {
     const user = String(process.env[ENV_QL_USER] || '').trim();
     const pass = String(process.env[ENV_QL_PASS] || '');
     if (!base || !user || !pass || !token) return;
-    const py = path.join(__dirname, 'ql_sync.py');
+    const py = resolveFile('ql_sync.py');
     if (!fs.existsSync(py)) return;
     try {
         const { execFileSync } = require('child_process');
@@ -498,7 +530,30 @@ function syncToQinglong(mobile, token) {
 // 五、凭证解析 + 缓存
 // ============================================================================
 
-const CK_CACHE = path.join(__dirname, '.unicom_ck.json');
+/**
+ * 在多个候选位置里找第一个存在的文件。
+ * 兼容两种部署：本地按项目分层（主脚本/ 附带脚本/），青龙里全部平铺在 /ql/data/scripts/。
+ */
+function resolveFile(name, ...extra) {
+    const cands = [];
+    for (const e of extra) if (e) cands.push(e);
+    cands.push(
+        path.join(__dirname, name),
+        path.join(__dirname, '..', '附带脚本', name),
+        path.join(__dirname, '..', '主脚本', name),
+        path.join(__dirname, '..', name),
+        path.join('/ql/data/scripts', name),
+        path.join('/ql/scripts', name),
+        path.join(process.cwd(), name),
+    );
+    for (const p of cands) {
+        try { if (fs.existsSync(p)) return p; } catch (e) { /* ignore */ }
+    }
+    return '';
+}
+
+const CK_CACHE = resolveFile('.unicom_ck.json',
+    path.join(__dirname, '..', '.unicom_ck.json')) || path.join(__dirname, '.unicom_ck.json');
 
 function readCache() {
     try {
@@ -1282,7 +1337,7 @@ function runCmfActivity(results, cache) {
     if (flag(ENV_PROBE)) return null;   // 探针模式不跑活动
 
     const src = findCmfSrc();
-    if (!src || !fs.existsSync(CMF_WRAPPER)) {
+    if (!src || !CMF_WRAPPER()) {
         console.log('');
         console.log('  🧊 乘风破浪2026：缺少 ' + (src ? 'unicom_cmf.py' : 'lt_cmf2026.py') + '，跳过');
         return null;
@@ -1325,9 +1380,10 @@ function runCmfActivity(results, cache) {
 
     const { spawnSync } = require('child_process');
     const py = process.env[ENV_PYPATH] || 'python';
-    const args = ['-X', 'utf8', CMF_WRAPPER,
+    const args = ['-X', 'utf8', CMF_WRAPPER(),
         '--phones', list.map((x) => x.mobile).join(','),
-        '--src', src];
+        '--src', src,
+        '--cache', CMF_TOKEN_CACHE];
     if (flag(ENV_CMF_TEST)) args.push('--test');
 
     const env = Object.assign({}, process.env, { PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' });
@@ -1338,7 +1394,7 @@ function runCmfActivity(results, cache) {
     let out = null;
     try {
         const r = spawnSync(py, args, {
-            cwd: __dirname, env, timeout: 20 * 60 * 1000,
+            cwd: path.dirname(CMF_WRAPPER()), env, timeout: 20 * 60 * 1000,
             maxBuffer: 32 * 1024 * 1024, encoding: 'utf8',
         });
         const errTxt = String(r.stderr || '');
@@ -1373,7 +1429,16 @@ function runCmfActivity(results, cache) {
 
     // 打印结果
     const accs = out.accounts || [];
+    const endedCnt = accs.filter((a) => a.ended).length;
+    if (endedCnt === accs.length) {
+        console.log('  └─ ⏹  活动已结束（全部账号跳过）');
+        return out;
+    }
     for (const a of accs) {
+        if (a.ended) {
+            console.log(`  │  [${a.index}] ${a.phone}  ⏹ 活动已结束`);
+            continue;
+        }
         const tag = a.login ? (a.checkin || '已参与') : '登录失败';
         console.log(`  │  [${a.index}] ${a.phone}  ${tag}`);
         const line2 = [];
@@ -1388,16 +1453,134 @@ function runCmfActivity(results, cache) {
         if (a.error) console.log(`  │      ⚠️ ${a.error}`);
     }
     const okCnt = accs.filter((a) => a.login).length;
+    const tail = endedCnt ? `${okCnt}/${accs.length} 账号完成 · ${endedCnt} 已结束`
+        : `${okCnt}/${accs.length} 账号完成`;
+    console.log(`  └─ ${tail}`);
+    return out;
+}
+
+/**
+ * 全部扩展任务 —— 调 unicom_tasks.py 包装器跑 chinaUnicom.py 的 10 个模块
+ * 包装器复用我们已拿到的 ecs_token（跳过它的 onLine 登录链）
+ */
+function findAllSrc() {
+    const cands = [
+        process.env[ENV_ALL_SRC],
+        path.join(__dirname, 'chinaUnicom.py'),
+        path.join(__dirname, '..', '主脚本', 'chinaUnicom.py'),
+        '/ql/data/scripts/chinaUnicom.py',
+        '/ql/scripts/chinaUnicom.py',
+    ].filter(Boolean);
+    for (const p of cands) {
+        try { if (fs.existsSync(p)) return p; } catch (e) { /* ignore */ }
+    }
+    return '';
+}
+
+function findAllWrapper() {
+    return resolveFile('unicom_tasks.py');
+}
+
+function runAllTasks(results, cache) {
+    if (!flag(ENV_ALL, true)) return null;
+    if (flag(ENV_PROBE)) return null;   // 探针模式不跑任务
+
+    const src = findAllSrc();
+    const wrapper = findAllWrapper();
+    if (!src || !wrapper) {
+        console.log('');
+        console.log('  🧩 扩展任务：缺少 ' + (!src ? 'chinaUnicom.py' : 'unicom_tasks.py') + '，跳过');
+        return null;
+    }
+
+    const list = [];
+    for (const r of results) {
+        if (!r.mobile) continue;
+        const rec = cache['m:' + r.mobile];
+        const tok = (rec && rec.token) || '';
+        if (tok && tok.length > 100) list.push(r.mobile);
+    }
+    if (!list.length) return null;
+
+    console.log('');
+    console.log('  ┌─ 🧩 扩展任务（联通祝福 / 天天领现金 / 权益超市 / 爱听 / 安全管家 …）');
+    console.log(`  │  ${list.length} 个账号参与`);
+
+    const { spawnSync } = require('child_process');
+    const py = process.env[ENV_PYPATH] || 'python';
+    const args = ['-X', 'utf8', wrapper,
+        '--phones', list.join(','),
+        '--cache', CK_CACHE,
+        '--src', src];
+    const skip = String(process.env[ENV_ALL_SKIP] || '').trim();
+    if (skip) args.push('--skip', skip);
+
+    const env = Object.assign({}, process.env, { PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' });
+    delete env.PUSH_PLUS_TOKEN;
+    delete env.PUSH_PLUS_TOPIC;
+    // 阅读开关：JS 侧叫 unicom_woread，Python 侧读 UNICOM_CU_WOREAD
+    env.UNICOM_CU_WOREAD = flag(ENV_WOREAD, true) ? 'on' : 'off';
+
+    let out = null;
+    try {
+        const r = spawnSync(py, args, {
+            cwd: path.dirname(wrapper), env, timeout: 40 * 60 * 1000,
+            maxBuffer: 64 * 1024 * 1024, encoding: 'utf8',
+        });
+        const errTxt = String(r.stderr || '');
+        // 只挑有价值的行，避免刷屏
+        const keep = /(====|✅|❌|⚠️|🎁|💰|抽奖|中奖|打卡|积分|红包|立减金|失败|异常)/;
+        const drop = /(重试 \(|正在|获取ticket成功|识别到纯手机号)/;
+        let shown = 0;
+        for (const ln of errTxt.split(/[\r\n]+/)) {
+            if (!ln.trim() || !keep.test(ln) || drop.test(ln)) continue;
+            console.log('  │  ' + ln
+                .replace(/^\[\d{2}:\d{2}:\d{2}\]\s*/, '')
+                .replace(/^账号\[\d+\]\s*/, ''));
+            shown += 1;
+        }
+        if (!shown) console.log('  │  （无关键日志）');
+
+        for (const ln of String(r.stdout || '').split(/[\r\n]+/)) {
+            if (ln.startsWith('%%CU_JSON%%')) {
+                out = JSON.parse(ln.slice('%%CU_JSON%%'.length));
+                break;
+            }
+        }
+        if (!out) {
+            const tail = String(r.stdout || '').slice(-300) || errTxt.slice(-300);
+            console.log('  │  ⚠️ 扩展任务未返回结果' + (tail ? `：${tail.replace(/\s+/g, ' ')}` : ''));
+        }
+    } catch (e) {
+        console.log(`  │  ⚠️ 扩展任务执行异常：${e.message}`);
+    }
+
+    if (!out || !out.ok) {
+        console.log(`  └─ ⚠️ 未完成${out && out.error ? '：' + String(out.error).slice(0, 80) : ''}`);
+        return { ok: false, accounts: [], error: (out && out.error) || '无返回' };
+    }
+
+    const accs = out.accounts || [];
+    for (const a of accs) {
+        console.log(`  │  [${a.index}] ${a.phone}  ${a.login ? '完成' : '未登录'}  ${a.seconds}s`);
+        for (const ln of (a.logs || [])) console.log('  │      ' + ln);
+        if (a.error) console.log(`  │      ⚠️ ${a.error}`);
+    }
+    const okCnt = accs.filter((a) => a.login).length;
     console.log(`  └─ ${okCnt}/${accs.length} 账号完成`);
     return out;
 }
 
 function buildCmfPushLines(cmf) {
     if (!cmf || !cmf.ok || !(cmf.accounts || []).length) return [];
+    const accs = cmf.accounts;
+    const endedCnt = accs.filter((a) => a.ended).length;
+    if (endedCnt === accs.length) return [];   // 活动结束就不占推送版面
     const L = [];
     L.push('');
     L.push('🧊 乘风破浪2026（云盘）');
-    for (const a of cmf.accounts) {
+    for (const a of accs) {
+        if (a.ended) continue;
         const stat = a.login ? '参与成功' : '登录失败';
         L.push(`  ${a.phone}  ${stat}`);
         const sub = [];
@@ -1412,12 +1595,27 @@ function buildCmfPushLines(cmf) {
         }
         if (a.error) L.push(`    ⚠️ ${a.error}`);
     }
-    const okCnt = cmf.accounts.filter((a) => a.login).length;
-    L.push(`  完成 ${okCnt}/${cmf.accounts.length} 个账号`);
+    const okCnt = accs.filter((a) => a.login).length;
+    L.push(`  完成 ${okCnt}/${accs.length} 个账号`);
     return L;
 }
 
-function buildPushText(results, cmf) {
+function buildAllPushLines(all) {
+    if (!all || !all.ok || !(all.accounts || []).length) return [];
+    const L = [];
+    L.push('');
+    L.push('🧩 扩展任务');
+    for (const a of all.accounts) {
+        L.push(`  ${a.phone}  ${a.login ? '完成' : '未登录'}  ${a.seconds}s`);
+        for (const ln of (a.logs || [])) L.push('    ' + ln);
+        if (a.error) L.push(`    ⚠️ ${a.error}`);
+    }
+    const okCnt = all.accounts.filter((a) => a.login).length;
+    L.push(`  完成 ${okCnt}/${all.accounts.length} 个账号`);
+    return L;
+}
+
+function buildPushText(results, cmf, all) {
     const ok = results.filter((r) => r.status === 'ok').length;
     const already = results.filter((r) => r.status === 'already').length;
     const dead = results.filter((r) => r.status === 'dead').length;
@@ -1475,6 +1673,7 @@ function buildPushText(results, cmf) {
     if (fail) tail.push(`异常 ${fail}`);
     L.push(tail.join(' · '));
 
+    for (const ln of buildAllPushLines(all)) L.push(ln);
     for (const ln of buildCmfPushLines(cmf)) L.push(ln);
 
     return {
@@ -1525,13 +1724,13 @@ function httpCall(url, method = 'GET', body = null, headers = {}, timeout = 2000
     });
 }
 
-async function push(results, cmf) {
+async function push(results, cmf, all) {
     const enabled = !/^(0|off|false|no|n)$/i.test(String(process.env[ENV_PUSH] || 'on').trim());
     const master = !/^(0|off|false|no|n)$/i.test(String(process.env[ENV_TY_PUSH] || 'on').trim());
     if (!enabled || !master) return;
     if (!results.length) return;
 
-    const { title, text } = buildPushText(results, cmf);
+    const { title, text } = buildPushText(results, cmf, all);
 
     // ① 优先用青龙自带的 sendNotify.js
     const notifyPaths = [
@@ -1654,6 +1853,15 @@ async function main() {
         }
     }
 
+    // ── 扩展任务：所有账号签到完后统一跑一次 ────────────────────────────
+    let all = null;
+    try {
+        all = runAllTasks(results, cache);
+    } catch (e) {
+        console.log(`  🧩 扩展任务异常：${e.message}`);
+    }
+    writeCache(cache);
+
     // ── 乘风破浪2026（云盘活动）：所有账号签到完后统一跑一次 ────────────
     let cmf = null;
     try {
@@ -1694,7 +1902,7 @@ async function main() {
         }
     }
 
-    await push(results, cmf);
+    await push(results, cmf, all);
     console.log('');
 }
 
