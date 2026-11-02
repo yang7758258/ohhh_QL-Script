@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- ----------------------------------------------------------------------
+  项目名称：OPPO 商城（取 CK 面板界面）
+  脚本文件：oppo_ck_panel.html
+  更新说明：
+    2026-11-02  Mist  仓库整理：统一项目标识、清理隐私信息
+ ------------------------------------------------------------------------- -->
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OPPO 商城 · CK 获取</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0f10;
+    --panel: rgba(255,255,255,.045);
+    --stroke: rgba(255,255,255,.09);
+    --txt: #e8eeec;
+    --dim: #7d8b87;
+    --green: #16c784;
+    --green2: #0a9d63;
+    --amber: #ffb020;
+    --red: #ff5a5f;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -30% -10% auto -10%;
+    height: 70vh;
+    background: radial-gradient(60% 60% at 30% 20%, rgba(22,199,132,.20), transparent 70%),
+                radial-gradient(50% 50% at 75% 10%, rgba(0,140,255,.13), transparent 70%);
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ---------- header ---------- */
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .logo {
+    width: 44px; height: 44px; border-radius: 13px; flex: none;
+    background: linear-gradient(140deg, var(--green), #067a4c);
+    display: grid; place-items: center;
+    font-size: 22px;
+    box-shadow: 0 8px 26px rgba(22,199,132,.35);
+  }
+  h1 { font-size: 19px; font-weight: 650; letter-spacing: .2px; }
+  .sub { font-size: 12.5px; color: var(--dim); margin-top: 3px; letter-spacing: .3px; }
+
+  /* ---------- card ---------- */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    padding: 22px;
+    margin-top: 18px;
+    backdrop-filter: blur(12px);
+    transition: border-color .25s, opacity .25s;
+  }
+  .card.locked { opacity: .38; pointer-events: none; }
+  .card.active { border-color: rgba(22,199,132,.42); }
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .step {
+    width: 22px; height: 22px; border-radius: 7px; flex: none;
+    background: rgba(22,199,132,.16); color: var(--green);
+    font-size: 12px; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .card-hint { font-size: 12px; color: var(--dim); margin-left: auto; }
+
+  /* ---------- inputs ---------- */
+  .row { display: flex; gap: 10px; }
+  input[type=text], input[type=password], input[type=number] {
+    flex: 1; min-width: 0;
+    background: rgba(0,0,0,.35);
+    border: 1px solid var(--stroke);
+    border-radius: 11px;
+    padding: 13px 15px;
+    color: var(--txt);
+    font-size: 15px;
+    font-family: inherit;
+    letter-spacing: .5px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input::placeholder { color: #4d5a56; letter-spacing: 0; }
+  input:focus { border-color: rgba(22,199,132,.55); box-shadow: 0 0 0 3px rgba(22,199,132,.11); }
+  #code { font-size: 22px; letter-spacing: 10px; text-align: center; font-weight: 600; padding: 11px 15px; }
+
+  button {
+    border: none; border-radius: 11px; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 13px 20px; color: #04120c;
+    background: linear-gradient(140deg, #1ee08f, #0a9d63);
+    transition: transform .12s, filter .2s, opacity .2s;
+    white-space: nowrap;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.08); }
+  button:active:not(:disabled) { transform: scale(.975); }
+  button:disabled { opacity: .38; cursor: not-allowed; }
+  button.ghost {
+    background: transparent; color: var(--txt);
+    border: 1px solid var(--stroke);
+  }
+  button.ghost:hover:not(:disabled) { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
+
+  /* ---------- timeline ---------- */
+  .timeline { margin-top: 4px; }
+  .tl-item {
+    display: flex; gap: 12px; padding: 7px 0;
+    font-size: 13px; color: var(--dim);
+    animation: fadeUp .3s ease both;
+  }
+  .tl-dot {
+    width: 16px; height: 16px; flex: none; margin-top: 1px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.16);
+    display: grid; place-items: center;
+    font-size: 9px; font-weight: 700; color: #04120c;
+  }
+  .tl-item.ok { color: var(--txt); }
+  .tl-item.ok .tl-dot { background: var(--green); border-color: var(--green); }
+  .tl-item.ok .tl-dot::after { content: "✓"; }
+  .tl-item.err { color: var(--red); }
+  .tl-item.err .tl-dot { background: var(--red); border-color: var(--red); }
+  .tl-item.err .tl-dot::after { content: "!"; }
+  .tl-item.run .tl-dot {
+    border-color: var(--green);
+    border-top-color: transparent;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- result ---------- */
+  .cookie {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(0,0,0,.42);
+    border: 1px solid rgba(22,199,132,.28);
+    border-radius: 12px;
+    padding: 13px 15px;
+    margin-top: 4px;
+  }
+  .cookie code {
+    flex: 1; min-width: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px; color: var(--green);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    user-select: all;
+  }
+  .mini {
+    padding: 7px 13px; font-size: 12px; border-radius: 8px;
+    background: rgba(22,199,132,.14); color: var(--green);
+    border: 1px solid rgba(22,199,132,.3);
+  }
+  .meta { display: flex; gap: 18px; margin-top: 14px; font-size: 12.5px; color: var(--dim); }
+  .meta b { color: var(--txt); font-weight: 600; }
+
+  /* ---------- settings ---------- */
+  .gear {
+    position: absolute; top: 0; right: 0;
+    width: 38px; height: 38px; border-radius: 11px;
+    display: grid; place-items: center; font-size: 17px;
+    background: var(--panel); border: 1px solid var(--stroke);
+    cursor: pointer; transition: transform .3s;
+  }
+  .gear:hover { transform: rotate(45deg); }
+  #settings { display: none; }
+  #settings.open { display: block; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 6px; letter-spacing: .3px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 20px);
+    background: #12352a; color: #d9fff0;
+    border: 1px solid rgba(22,199,132,.4);
+    padding: 11px 20px; border-radius: 11px; font-size: 13.5px;
+    opacity: 0; pointer-events: none; transition: all .28s;
+    z-index: 99; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.bad { background: #3a1a1c; color: #ffd9da; border-color: rgba(255,90,95,.4); }
+  .foot { text-align: center; font-size: 11.5px; color: #47524e; margin-top: 30px; letter-spacing: .3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="position: relative;">
+    <div class="logo">🍊</div>
+    <div style="flex:1">
+      <h1>OPPO 商城 · 凭据获取</h1>
+      <div class="sub">短信验证码登录 → 自动抓 NEWOPPOSID → 直推青龙</div>
+    </div>
+    <div class="gear" id="gear" title="青龙设置">⚙</div>
+  </header>
+
+  <div class="card" id="settings">
+    <div class="card-head">
+      <div class="step">⚙</div>
+      <div class="card-title">青龙面板</div>
+      <div class="card-hint">保存在本机浏览器</div>
+    </div>
+    <div class="field"><label>面板地址</label><input type="text" id="qlHost" placeholder="http://127.0.0.1:5700" /></div>
+    <div class="field"><label>用户名</label><input type="text" id="qlUser" placeholder="admin" /></div>
+    <div class="field"><label>密码</label><input type="password" id="qlPass" placeholder="••••••" /></div>
+    <div class="field"><label>写入的环境变量名</label><input type="text" id="qlEnv" placeholder="oppo_ck" /></div>
+  </div>
+
+  <div class="card" id="card1">
+    <div class="card-head">
+      <div class="step">1</div>
+      <div class="card-title">手机号</div>
+      <div class="card-hint" id="hint1">需要已绑定 OPPO 账号</div>
+    </div>
+    <div class="row">
+      <input type="text" id="phone" placeholder="请输入手机号" maxlength="11" inputmode="numeric" />
+      <button id="btnSend">获取验证码</button>
+    </div>
+  </div>
+
+  <div class="card locked" id="card2">
+    <div class="card-head">
+      <div class="step">2</div>
+      <div class="card-title">短信验证码</div>
+      <div class="card-hint" id="hint2">已发送到手机</div>
+    </div>
+    <div class="row">
+      <input type="text" id="code" placeholder="000000" maxlength="6" inputmode="numeric" />
+      <button id="btnLogin">登录</button>
+    </div>
+  </div>
+
+  <div class="card" id="cardLog" style="display:none">
+    <div class="card-head">
+      <div class="step">⌁</div>
+      <div class="card-title">执行进度</div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <div class="card locked" id="card3">
+    <div class="card-head">
+      <div class="step">3</div>
+      <div class="card-title">登录凭据</div>
+      <div class="card-hint">有效约 1 天</div>
+    </div>
+    <div class="cookie">
+      <code id="cookie">—</code>
+      <button class="mini" id="btnCopy">复制</button>
+    </div>
+    <div class="meta">
+      <div>类型 <b>NEWOPPOSID</b></div>
+      <div id="metaLen">长度 <b>—</b></div>
+      <div id="metaExp">到期 <b>—</b></div>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button id="btnPush" style="flex:1">推送到青龙</button>
+      <button class="ghost" id="btnRetry">重新获取</button>
+    </div>
+  </div>
+
+  <div class="foot">跑在本机 · 凭据不上传任何第三方</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { sid: null, timer: null, code: null, logs: [] };
+
+  // ---------- 设置持久化 ----------
+  var DEF = { host: '', user: '', pass: '', env: 'oppo_ck' };
+  function loadCfg() {
+    var c = {};
+    try { c = JSON.parse(localStorage.getItem('oppo_ql') || '{}'); } catch (e) { c = {}; }
+    ['host', 'user', 'pass', 'env'].forEach(function (k) {
+      if (!c[k]) c[k] = DEF[k];
+    });
+    return c;
+  }
+  function saveCfg() {
+    localStorage.setItem('oppo_ql', JSON.stringify({
+      host: $('qlHost').value.trim(),
+      user: $('qlUser').value.trim(),
+      pass: $('qlPass').value,
+      env: $('qlEnv').value.trim()
+    }));
+  }
+  var cfg = loadCfg();
+  $('qlHost').value = cfg.host; $('qlUser').value = cfg.user;
+  $('qlPass').value = cfg.pass; $('qlEnv').value = cfg.env;
+  ['qlHost', 'qlUser', 'qlPass', 'qlEnv'].forEach(function (id) {
+    $(id).addEventListener('change', saveCfg);
+  });
+  $('gear').onclick = function () { $('settings').classList.toggle('open'); };
+
+  // ---------- 提示 ----------
+  var toastTimer = null;
+  function toast(msg, bad) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (bad ? ' bad' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = 'toast'; }, 2400);
+  }
+
+  // ---------- 时间线 ----------
+  function renderLogs() {
+    var tl = $('timeline');
+    tl.innerHTML = '';
+    state.logs.forEach(function (l) {
+      var d = document.createElement('div');
+      d.className = 'tl-item ' + (l.kind || 'ok');
+      var dot = document.createElement('div'); dot.className = 'tl-dot';
+      var txt = document.createElement('div'); txt.textContent = l.text;
+      d.appendChild(dot); d.appendChild(txt);
+      tl.appendChild(d);
+    });
+  }
+
+  function api(path, body) {
+    return fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    }).then(function (r) { return r.json(); });
+  }
+
+  // ---------- 步骤 1：发码 ----------
+  $('btnSend').onclick = function () {
+    var phone = $('phone').value.trim();
+    if (!/^1[3-9]\d{9}$/.test(phone)) { toast('手机号格式不对', true); return; }
+    localStorage.setItem('oppo_phone', phone);
+
+    $('btnSend').disabled = true;
+    $('btnSend').textContent = '发送中…';
+    $('card2').classList.add('locked');
+    $('card3').classList.add('locked');
+    $('cardLog').style.display = 'block';
+    $('card1').classList.add('active');
+    $('hint1').textContent = '正在唤起浏览器';
+    state.logs = [{ text: '启动浏览器内核', kind: 'run' }];
+    renderLogs();
+
+    api('/api/send', { phone: phone }).then(function (r) {
+      if (!r.ok) { toast(r.error || '启动失败', true); resetSend(); return; }
+      state.sid = r.sid;
+      poll();
+    }).catch(function (e) { toast('请求失败：' + e.message, true); resetSend(); });
+  };
+
+  function resetSend() {
+    $('btnSend').disabled = false;
+    $('btnSend').textContent = '获取验证码';
+    $('hint1').textContent = '需要已绑定 OPPO 账号';
+  }
+
+  // ---------- 轮询 ----------
+  function poll() {
+    clearInterval(state.timer);
+    state.timer = setInterval(function () {
+      if (!state.sid) return;
+      fetch('/api/status?id=' + encodeURIComponent(state.sid))
+        .then(function (r) { return r.json(); })
+        .then(function (s) {
+          if (!s.ok) return;
+          state.logs = s.logs || [];
+          renderLogs();
+          $('timeline').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+          if (s.phase === 'waiting_sms') {
+            $('card2').classList.remove('locked');
+            $('card2').classList.add('active');
+            $('hint2').textContent = '已发送，5 分钟内有效';
+            $('btnSend').disabled = false;
+            $('btnSend').textContent = '重新获取';
+            $('code').focus();
+          }
+          if (s.phase === 'done' && s.cookie) {
+            clearInterval(state.timer);
+            onDone(s.cookie);
+          }
+          if (s.phase === 'error') {
+            clearInterval(state.timer);
+            resetSend();
+            toast(s.error || '失败了', true);
+            $('card2').classList.add('locked');
+          }
+        })
+        .catch(function () {});
+    }, 900);
+  }
+
+  function onDone(cookie) {
+    state.code = cookie;
+    $('card1').classList.remove('active');
+    $('card2').classList.remove('active');
+    $('card2').classList.add('locked');
+    $('card3').classList.remove('locked');
+    $('card3').classList.add('active');
+    $('cookie').textContent = cookie;
+    $('metaLen').innerHTML = '长度 <b>' + cookie.length + '</b>';
+    $('metaExp').innerHTML = '到期 <b>' + new Date(Date.now() + 864e5).toLocaleString('zh-CN', { hour12: false }) + '</b>';
+    $('hint1').textContent = '登录成功';
+    $('btnSend').disabled = false;
+    $('btnSend').textContent = '再取一次';
+    toast('登录成功，凭据已拿到');
+    $('card3').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ---------- 步骤 2：提交验证码 ----------
+  $('btnLogin').onclick = function () {
+    var code = $('code').value.replace(/\D/g, '');
+    if (code.length < 4) { toast('验证码不完整', true); return; }
+    $('btnLogin').disabled = true;
+    $('btnLogin').textContent = '验证中…';
+    $('card2').classList.add('locked');
+    api('/api/verify', { id: state.sid, code: code }).then(function (r) {
+      $('btnLogin').disabled = false;
+      $('btnLogin').textContent = '登录';
+      if (!r.ok) {
+        toast(r.error || '验证失败', true);
+        $('card2').classList.remove('locked');
+      }
+    }).catch(function (e) { toast('请求失败：' + e.message, true); });
+  };
+  $('code').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') $('btnLogin').click();
+  });
+  $('phone').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') $('btnSend').click();
+  });
+
+  // ---------- 复制 ----------
+  $('btnCopy').onclick = function () {
+    if (!state.code) return;
+    var done = function () { toast('已复制'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(state.code).then(done).catch(fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = state.code; document.body.appendChild(ta);
+      ta.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('复制失败', true); }
+      document.body.removeChild(ta);
+    }
+  };
+
+  // ---------- 推送青龙 ----------
+  $('btnPush').onclick = function () {
+    if (!state.code) return;
+    saveCfg();
+    var c = loadCfg();
+    if (!c.host || !c.user || !c.pass) { $('settings').classList.add('open'); toast('先填青龙面板信息', true); return; }
+    $('btnPush').disabled = true;
+    $('btnPush').textContent = '推送中…';
+    api('/api/push', { host: c.host, user: c.user, pass: c.pass, env: c.env, cookie: state.code })
+      .then(function (r) {
+        $('btnPush').disabled = false;
+        $('btnPush').textContent = '推送到青龙';
+        if (r.ok) toast(r.message || '推送成功');
+        else toast(r.error || '推送失败', true);
+      })
+      .catch(function (e) {
+        $('btnPush').disabled = false;
+        $('btnPush').textContent = '推送到青龙';
+        toast('请求失败：' + e.message, true);
+      });
+  };
+
+  $('btnRetry').onclick = function () { location.reload(); };
+
+  // 回填上次的手机号
+  var lastPhone = localStorage.getItem('oppo_phone');
+  if (lastPhone) $('phone').value = lastPhone;
+})();
+</script>
+</body>
+</html>
