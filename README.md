@@ -147,6 +147,13 @@ node oppo_ck_panel.js --port 7788 --open
 
 同目录需要 `oppo_login.js` + `oppo_ck_panel.html`。
 
+**不想装 Node？用打包好的 exe（需下载，不进仓库）：**
+
+> 📦 [OPPO-Shop-CK-Tool-v1.1.exe](https://github.com/yang7758258/ohhh_QL-Script/releases/download/v1.1/OPPO-Shop-CK-Tool-v1.1.exe) · 约 71 MB · 单文件便携版，双击即用
+>
+> SHA256 `5cef081d59a6f81efeffd7896ef0f28f53aee2e3592b88af7f3e0397923e0997`
+> 全部 Release：[releases](https://github.com/yang7758258/ohhh_QL-Script/releases)
+
 ### 顺丰速运+ `sf_qinglong.js`
 
 ```bash
