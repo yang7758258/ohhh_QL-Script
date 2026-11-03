@@ -5,6 +5,7 @@
 #  脚本文件：unicom_auto_login.py
 #  更新说明：
 #    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+#    2026-11-03  Mist  设备指纹改为按账号派生，修复「设备登录过多」；UA 去掉真机型号
 # ---------------------------------------------------------------------------
 """
 中国联通 App 账号密码全自动登录 —— 过腾讯点选验证码，拿 ecs_token
@@ -30,6 +31,7 @@
 import argparse
 import base64
 import gzip
+import hashlib
 import io
 import json
 import os
@@ -100,13 +102,41 @@ APPID = (
     "480708cc14c23046e2e8e031ff9108631f3c2e0620ab34f2669ad145791c2fec"
 )
 TCAPTCHA_AID = "195809716"
-DEVICE_CODE = "D6A33F49-16BB-492E-A997-ABE0B51032D2"
-UNIQUE_ID = "iosa9471c321a635b240db36fae8d55cc1db"
-DEVICE_ID = "ca35d3a5ee79593d94254997cc8becd2536b4dd1967a0f9bf4e820131d99b2"
-UA_APP = ("ChinaUnicom4.x/13.1 (com.chinaunicom.mobilebusiness; build:14; iOS 26.6.1) "
-          "Alamofire/4.7.3 unicom{version:iphone_c@13.0100}")
-UA_H5 = ("Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 "
-         "(KHTML, like Gecko)  unicom{version:iphone_c@13.0100};ltst;OSVersion/26.6.1")
+
+# ---------------- 设备指纹：每个账号固定一台“虚拟设备” ----------------
+# 踩过的坑：
+#   ① 设备码写死 → 全仓库所有用户共用同一台设备，联通把不同人的登录挤到一起；
+#   ② 设备码每次随机 → 每跑一次就多注册一台设备，几天就顶到上限「设备登录过多」，
+#      连自己真机都登不进去。
+# 现在改为「按手机号确定性派生」：同一账号永远是同一台设备，换账号才是另一台。
+# 想主动换一台设备：改 unicom_device_seed 即可（整组设备码一起变）。
+DEVICE_SEED = os.environ.get("unicom_device_seed", "mist-2026")
+DEVICE_MODEL = os.environ.get("unicom_device_model", "iPhone14,5")
+DEVICE_OS = os.environ.get("unicom_device_os", "17.6.1")
+APP_VERSION = os.environ.get("unicom_app_version", "iphone_c@13.0100")
+
+DEVICE_CODE = ""
+UNIQUE_ID = ""
+DEVICE_ID = ""
+UA_APP = ""
+UA_H5 = ""
+
+
+def _derive_device(mobile):
+    """按 手机号 + 种子 派生稳定设备身份，避免设备数越跑越多。"""
+    global DEVICE_CODE, UNIQUE_ID, DEVICE_ID, UA_APP, UA_H5
+    key = ("unicom|" + DEVICE_SEED + "|" + (mobile or "anon")).encode("utf-8")
+    hx = hashlib.sha256(key).hexdigest().upper()
+    DEVICE_CODE = "%s-%s-%s-%s-%s" % (hx[0:8], hx[8:12], hx[12:16], hx[16:20], hx[20:32])
+    UNIQUE_ID = "ios" + hashlib.sha256(b"uid|" + key).hexdigest()[:32]
+    DEVICE_ID = hashlib.sha256(b"did|" + key).hexdigest()
+    ua_os = "_".join(DEVICE_OS.split(".")[:2])   # 真实 UA 里是 17_6，不是 17_6_1
+    UA_APP = ("ChinaUnicom4.x/13.1 (com.chinaunicom.mobilebusiness; build:14; iOS %s) "
+              "Alamofire/4.7.3 unicom{version:%s}" % (DEVICE_OS, APP_VERSION))
+    UA_H5 = ("Mozilla/5.0 (iPhone; CPU iPhone OS %s like Mac OS X) AppleWebKit/605.1.15 "
+             "(KHTML, like Gecko)  unicom{version:%s};ltst;OSVersion/%s"
+             % (ua_os, APP_VERSION, DEVICE_OS))
+    return DEVICE_CODE
 
 ANTICAP_BASE = os.environ.get("ANTICAP_URL", "")
 ANTICAP_USER = os.environ.get("ANTICAP_USER", "admin")
@@ -207,13 +237,13 @@ def post_login(s, mobile, password, result_token=None):
         "voipToken": "citc-default-token-do-not-push", "deviceBrand": "iPhone",
         "deviceId": DEVICE_ID,
         "simOperator": "--,--,65535,65535,--@--,--,65535,65535,--", "netWay": "wifi",
-        "deviceCode": DEVICE_CODE, "uniqueIdentifier": UNIQUE_ID, "deviceOS": "26.6.1",
+        "deviceCode": DEVICE_CODE, "uniqueIdentifier": UNIQUE_ID, "deviceOS": DEVICE_OS,
         "latitude": "", "version": "iphone_c@13.0100", "pip": "0.0.0.0",
         "isFirstInstall": "0", "remark4": "", "keyVersion": "2", "longitude": "",
         "simCount": "1",
         "mobile": rsa_enc(mobile + rand6()),
         "isRemberPwd": "false", "appId": APPID,
-        "reqtime": time.strftime("%Y-%m-%d %H:%M:%S"), "deviceModel": "iPhone17,1",
+        "reqtime": time.strftime("%Y-%m-%d %H:%M:%S"), "deviceModel": DEVICE_MODEL,
         "password": rsa_enc(password + rand6()),
     }
     if result_token:
@@ -485,6 +515,8 @@ def find_node_root():
 
 # ============================ 主流程 ============================
 def login(mobile, password, headless=True, max_try=4):
+    _derive_device(mobile)
+    log("设备: %s / iOS %s / %s…" % (DEVICE_MODEL, DEVICE_OS, DEVICE_CODE[:8]))
     s = make_session()
     warm_up(s)
 
