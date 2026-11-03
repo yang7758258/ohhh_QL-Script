@@ -3,6 +3,7 @@
  *  脚本文件：unicom_signin.js
  *  更新说明：
  *    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+ *    2026-11-03  Mist  设备指纹改为按账号派生，修复「设备登录过多」；UA 去掉真机型号
  * ---------------------------------------------------------------------------
  */
 /**
@@ -120,8 +121,27 @@ const API = {
 };
 
 /** 与 App 完全一致的 UA（WebView 那套，带 unicom{version:...} 标记） */
-const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 '
-    + '(KHTML, like Gecko)  unicom{version:iphone_c@13.0100};ltst;OSVersion/26.6.1';
+/** 设备号与系统版本：都从环境变量读，默认给一台中性机型，不写死任何人的真机 */
+const DEVICE_SEED = process.env.unicom_device_seed || 'mist-2026';
+const DEVICE_MODEL = process.env.unicom_device_model || 'iPhone14,5';
+const DEVICE_OS = process.env.unicom_device_os || '17.6.1';
+const UA_OS = DEVICE_OS.split('.').slice(0, 2).join('_');   // 真实 UA 是 17_6，不是 17_6_1
+const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS ' + UA_OS
+    + ' like Mac OS X) AppleWebKit/605.1.15 '
+    + '(KHTML, like Gecko)  unicom{version:iphone_c@13.0100};ltst;OSVersion/' + DEVICE_OS;
+
+/**
+ * 设备码：按 手机号 + 种子 确定性派生，同一个账号永远是同一台设备。
+ * 旧写法是 crypto.randomBytes —— 缓存一丢就换一台新设备，跑几天就顶到
+ * 联通「设备登录过多」的上限，连自己真机都登不进去。
+ */
+function deriveDeviceCode(mobile) {
+    const hx = crypto.createHash('sha256')
+        .update('unicom|' + DEVICE_SEED + '|' + (mobile || 'anon'), 'utf8')
+        .digest('hex').toUpperCase();
+    return [hx.slice(0, 8), hx.slice(8, 12), hx.slice(12, 16), hx.slice(16, 20), hx.slice(20, 32)]
+        .join('-');
+}
 const REFERER = 'https://img.client.10010.com/SigininApp/index.html';
 const ORIGIN = 'https://img.client.10010.com';
 
@@ -958,7 +978,7 @@ async function runAccount(acc, idx, total, cache) {
         cookie: token ? `ecs_token=${token}` : '',
         mobile: acc.mobile,
         deviceCode: (cache[cacheKey] && cache[cacheKey].deviceCode)
-            || crypto.randomBytes(16).toString('hex').toUpperCase(),
+            || deriveDeviceCode(acc.mobile),
     };
     r.tokenTail = maskToken(sess.token);
 
