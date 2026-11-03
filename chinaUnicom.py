@@ -4,6 +4,7 @@
 #  脚本文件：chinaUnicom.py
 #  更新说明：
 #    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
+#    2026-11-03  Mist  设备指纹改为按账号派生，修复「设备登录过多」；UA 去掉真机型号
 # ---------------------------------------------------------------------------
 """
 中国联通 Python 版 v1.0.5
@@ -292,10 +293,9 @@ class UserService:
         self.appId = ""
         self.city_info = []
         self.last_read_submission_time = 0
-        if globalConfig.get("refresh_device_id", False):
-            self.uuid = str(uuid.uuid4()).replace('-', '')
-        else:
-            self.uuid = os.environ.get("chinaUnicomUuid") or str(uuid.uuid4()).replace('-', '')
+        # 设备号改为「按账号派生」，不再每次随机（见 _ensure_device_uuid）
+        self.uuid = (os.environ.get("chinaUnicomUuid") or "").strip()
+        self.cloud_device_id = ""
         self.unicomTokenId = self.random_string(32)
         self.tokenId_cookie = "chinaunicom-" + self.random_string(32, string.ascii_uppercase + string.digits)
         self.ecs_token = ""
@@ -417,7 +417,10 @@ class UserService:
                     self.account_mobile = potential_mobile
         self.unicomTokenId = str(uuid.uuid4()).replace('-', '') # simplified
         self.tokenId_cookie = "chinaunicom-" + str(uuid.uuid4()).replace('-', '').upper() # simplified
-        self.cookie_string = f"TOKENID_COOKIE={self.tokenId_cookie}; UNICOM_TOKENID={self.unicomTokenId}; sdkuuid={self.unicomTokenId}"
+        # sdkuuid 是设备标识，必须按账号稳定（否则每次跑都像换了一台手机）
+        self.cookie_string = (f"TOKENID_COOKIE={self.tokenId_cookie}; "
+                              f"UNICOM_TOKENID={self.unicomTokenId}; "
+                              f"sdkuuid={self._ensure_device_uuid()}")
         self.update_session_cookies()
 
     def update_session_cookies(self):
@@ -468,6 +471,36 @@ class UserService:
             self.log(f"RSA加密失败: {str(e)}")
             return ""
 
+    def _ensure_device_uuid(self):
+        """返回本账号固定的设备号。
+
+        旧逻辑每次 str(uuid.uuid4()) —— 等于每跑一次就向联通注册一台新设备，
+        累计到上限就报「设备登录过多」，连本人真机都进不去。
+        现在按 账号+种子 派生：同一账号永远同一台设备。
+        想主动换设备：设 chinaUnicomDeviceSeed，或把 refresh_device_id 置 True。
+        """
+        if getattr(self, "_uuid_ready", False):
+            return self.uuid
+        seed = os.environ.get("chinaUnicomDeviceSeed", "mist-2026")
+        mobile = (self.account_mobile or self.mobile
+                  or getattr(self, "token_online", "") or getattr(self, "cookie", "") or "anon")
+        raw = "unicom|%s|%s" % (seed, mobile)
+        if globalConfig.get("refresh_device_id", False):
+            raw += "|" + str(random.randint(1, 10 ** 9))
+        hx = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        env_uuid = (os.environ.get("chinaUnicomUuid") or "").strip()
+        self.uuid = env_uuid or hx[:32]
+        self.cloud_device_id = base64.b64encode(
+            hashlib.sha256(("cloud|" + raw).encode("utf-8")).digest()[:24]).decode()
+        self._uuid_ready = True
+        return self.uuid
+
+    def _yp_device_id(self):
+        """云盘侧设备号，同样按账号派生，不再用一个写死的常量。"""
+        self._ensure_device_uuid()
+        return self.cloud_device_id
+
+
     def generate_appid(self):
 
         def rnd(): return str(random.randint(0, 9))
@@ -479,6 +512,7 @@ class UserService:
 
     def unicom_login(self):
         self.log(f"正在使用账号 {mask_str(self.account_mobile)} 进行登录...")
+        self._ensure_device_uuid()
         if not self.appId:
             self.appId = self.generate_appid()
             self.log(f"生成临时 AppId: {self.appId[:15]}...")
@@ -646,7 +680,7 @@ class UserService:
                 'provinceChanel': 'general',
                 'deviceModel': 'ALN-AL10',
                 'step': 'dingshi',
-                'androidId': '291a7deb1d716b5a',
+                'androidId': self._ensure_device_uuid()[:16],
                 'reqtime': int(time.time() * 1000)
             }
             if self.appId:
@@ -694,7 +728,7 @@ class UserService:
             params = {
                 "taskId": "",
                 "channel": "wode",
-                "imei": self.uuid
+                "imei": self._ensure_device_uuid()
             }
             res = self.request("get", url, params=params)
             if not res: return
@@ -2000,7 +2034,7 @@ class UserService:
              })
         elif url_name == 'aiMoveFile':
              headers.update({
-                 'X-YP-Device-Id': 'yOH1Y2/Ck5tBHRRBEAPCoGRGBOHCob7I',
+                 'X-YP-Device-Id': self._yp_device_id(),
                  'app-type': 'liantongyunpanapp',
                  'Access-Token': self.cloudDisk.userToken,
                  'Client-Id': '1001000035',
