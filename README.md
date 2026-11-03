@@ -174,6 +174,7 @@ export sf_tasks="off"                          # 跳过任务只签到
 
 | 日期 | 内容 |
 |:---|:---|
+| **2026-11-03** | 🐞 **中国联通** 修复「设备登录过多」：设备码改为按账号确定性派生（`unicom_auto_login.py` 去掉写死常量、`unicom_signin.js` 不再每次随机、`chinaUnicom.py` 的 uuid / sdkuuid / 云盘设备号统一派生），同一账号永远同一台设备<br>🔒 UA 去掉真机型号（iPhone17,1 / iOS 26.6.1），改为中性机型，可用 `unicom_device_model` / `unicom_device_os` / `unicom_device_seed` 覆盖 |
 | **2026-11-02** | 📄 **新增** OPPO 商城四件套：`oppo_store_daily.js`（签到 + 日常任务 + 活动任务 + 抽奖 v1.1）、`oppo_login.js`（账号密码登录 / 取 CK 核心）、`oppo_ck_panel.js` + `oppo_ck_panel.html`（短信登录取 CK 面板）<br>🔧 统一「项目名称 + 更新说明」头部标识，修正头部版本号与运行时横幅不一致 |
 | **2026-11-01** | 🔧 **中国联通** `unicom_signin.js` v1.3：补齐 token 失效自动续期链路<br>🔧 **中国联通** `unicom_auto_login.py`：验证码服务地址改为环境变量，移除硬编码<br>📦 **仓库整理**：全脚本补充「项目名称 + 更新说明」头部标识<br>🧹 **隐私清理**：清除脚本内的手机号、内网 IP、个人信息<br>🗂️ **结构清理**：移除废弃目录，README 重写并修正全部链接<br>📄 **新增** `unicom_auto_login.py` / `cap_solver.py`<br>📄 **新增** `chinaUnicom.py`（全功能 v1.0.5）+ `unicom_tasks.py`（全任务包装器），扩展任务链路打通 |
 | 2026-10-20 | 顺丰速运+ v3 抓包实证版 |
