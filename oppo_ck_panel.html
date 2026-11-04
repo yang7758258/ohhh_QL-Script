@@ -5,6 +5,7 @@
   脚本文件：oppo_ck_panel.html
   更新说明：
     2026-11-02  Mist  仓库整理：统一项目标识、清理隐私信息
+    2026-11-04  Mist  新增校验结果显示：类型 / 账号 / 积分 / 有效期
  ------------------------------------------------------------------------- -->
 <head>
 <meta charset="utf-8" />
@@ -255,14 +256,16 @@
     <div class="card-head">
       <div class="step">3</div>
       <div class="card-title">登录凭据</div>
-      <div class="card-hint">有效约 1 天</div>
+      <div class="card-hint" id="hintType">已校验可用</div>
     </div>
     <div class="cookie">
       <code id="cookie">—</code>
       <button class="mini" id="btnCopy">复制</button>
     </div>
     <div class="meta">
-      <div>类型 <b>NEWOPPOSID</b></div>
+      <div id="metaType">类型 <b>—</b></div>
+      <div id="metaNick">账号 <b>—</b></div>
+      <div id="metaPoint">积分 <b>—</b></div>
       <div id="metaLen">长度 <b>—</b></div>
       <div id="metaExp">到期 <b>—</b></div>
     </div>
@@ -392,7 +395,7 @@
           }
           if (s.phase === 'done' && s.cookie) {
             clearInterval(state.timer);
-            onDone(s.cookie);
+            onDone(s);
           }
           if (s.phase === 'error') {
             clearInterval(state.timer);
@@ -405,7 +408,11 @@
     }, 900);
   }
 
-  function onDone(cookie) {
+  function onDone(st) {
+    var cookie = st.cookie;
+    var kind = st.kind || '';
+    var info = st.info || {};
+    var days = kind === 'TOKENSID' ? 30 : 1;
     state.code = cookie;
     $('card1').classList.remove('active');
     $('card2').classList.remove('active');
@@ -413,12 +420,16 @@
     $('card3').classList.remove('locked');
     $('card3').classList.add('active');
     $('cookie').textContent = cookie;
+    $('hintType').textContent = '已校验 · ' + days + ' 天';
+    $('metaType').innerHTML = '类型 <b>' + (kind || '—') + '</b>';
+    $('metaNick').innerHTML = '账号 <b>' + (info.nick || '—') + '</b>';
+    $('metaPoint').innerHTML = '积分 <b>' + (info.amount === undefined ? '—' : info.amount) + '</b>';
     $('metaLen').innerHTML = '长度 <b>' + cookie.length + '</b>';
-    $('metaExp').innerHTML = '到期 <b>' + new Date(Date.now() + 864e5).toLocaleString('zh-CN', { hour12: false }) + '</b>';
+    $('metaExp').innerHTML = '到期 <b>约 ' + days + ' 天</b>';
     $('hint1').textContent = '登录成功';
     $('btnSend').disabled = false;
     $('btnSend').textContent = '再取一次';
-    toast('登录成功，凭据已拿到');
+    toast('凭据已校验通过：' + (info.nick || kind));
     $('card3').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
