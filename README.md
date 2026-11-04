@@ -11,7 +11,7 @@
 | 5 | 中国联通（验证码核心） | [cap_solver.py](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/cap_solver.py) | — | 被调用 | ✅ |
 | 6 | 中国南方航空 | [csair_signin.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/csair_signin.js) | `CSAIR_CK` / `CSAIR_ACCOUNT` | `22 8 * * *` | ✅ |
 | 7 | OPPO 商城（签到） | [oppo_store_daily.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_store_daily.js) | `oppo_account` / `oppo_ck` | `10 9 * * *` | ✅ |
-| 8 | OPPO 商城（取 CK 面板） | [oppo_ck_panel.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_ck_panel.js) | 见文件头 | 手动运行 | ✅ |
+| 8 | OPPO 商城（取 CK 面板） | [oppo_ck_panel.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_ck_panel.js) | 见 [说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) | 手动运行 | ✅ |
 | 9 | OPPO 商城（登录核心） | [oppo_login.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_login.js) | `OPPO_CHROME` 等 | 被调用 | ✅ |
 | 10 | OPPO 商城（面板界面） | [oppo_ck_panel.html](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_ck_panel.html) | — | 被面板加载 | ✅ |
 | 11 | 顺丰速运+ | [sf_qinglong.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | `SfsyUrl` | `0 9 * * *` | ✅ |
@@ -137,7 +137,11 @@ export OPPO_SMS_FILE=""                  # 短信验证码文件（脚本轮询�
 
 ### OPPO 商城取 CK 面板 `oppo_ck_panel.js`
 
-没有凭据时用它：输手机号 → 收短信 → 拿 `NEWOPPOSID` → 一键写进青龙 `oppo_ck`。
+没有凭据时用它：输手机号 → 收短信 → 拿凭据 → **先校验可用** → 一键写进青龙 `oppo_ck`。
+
+> 2026-11-04 起，抓到的 cookie 会先拿去打一次会员信息接口，接口认了才收下 ——
+> 不会出现「塞进青龙才发现不能用」。候选里有 TOKENSID（约 30 天）就优先用它，
+> 只有 NEWOPPOSID（约 1 天）时才退回短凭据。
 
 ```bash
 node oppo_ck_panel.js                    # 默认起本地面板，自动开浏览器
@@ -148,10 +152,10 @@ node oppo_ck_panel.js --port 7788 --open
 
 **不想装 Node？用打包好的 exe（需下载，不进仓库）：**
 
-> 📦 [OPPO-Shop-CK-Tool-v1.1.exe](https://github.com/yang7758258/ohhh_QL-Script/releases/download/v1.1/OPPO-Shop-CK-Tool-v1.1.exe) · 约 71 MB · 单文件便携版，双击即用
+> 📦 [OPPO-Shop-CK-Tool-v1.2.exe](https://github.com/yang7758258/ohhh_QL-Script/releases/download/v1.2/OPPO-Shop-CK-Tool-v1.2.exe) · 约 71 MB · 单文件便携版，双击即用
 >
-> SHA256 `5cef081d59a6f81efeffd7896ef0f28f53aee2e3592b88af7f3e0397923e0997`
-> 全部 Release：[releases](https://github.com/yang7758258/ohhh_QL-Script/releases)
+> SHA256 `4deea086f241c4d38d37d916a758aae85f780313ce2fbe84ad47ccff40391cc6`
+> 完整说明：[OPPO取CK工具.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) · 全部 Release：[releases](https://github.com/yang7758258/ohhh_QL-Script/releases)
 
 ### 顺丰速运+ `sf_qinglong.js`
 
@@ -174,6 +178,7 @@ export sf_tasks="off"                          # 跳过任务只签到
 
 | 日期 | 内容 |
 |:---|:---|
+| **2026-11-04** | 🎈 **OPPO 取 CK 工具 v1.2**：抓到凭据后**先校验再用**——逐个候选打会员信息接口，接口认了才收，失败会打印每个候选的原因（`code=5008` 过期 / `login=false` 登录没落稳 / `HTTP 403` 被拦）<br>🔧 **凭据优选** TOKENSID（约 30 天）＞ NEWOPPOSID（约 1 天）<br>🖥 面板显示校验结果：类型 / 账号名 / 积分 / 有效期<br>📄 新增 [OPPO取CK工具.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) 完整说明<br>📦 [v1.2 exe](https://github.com/yang7758258/ohhh_QL-Script/releases/tag/v1.2) 已发布 |
 | **2026-11-03** | 🐞 **中国联通** 修复「设备登录过多」：设备码改为按账号确定性派生（`unicom_auto_login.py` 去掉写死常量、`unicom_signin.js` 不再每次随机、`chinaUnicom.py` 的 uuid / sdkuuid / 云盘设备号统一派生），同一账号永远同一台设备<br>🔒 UA 去掉真机型号（iPhone17,1 / iOS 26.6.1），改为中性机型，可用 `unicom_device_model` / `unicom_device_os` / `unicom_device_seed` 覆盖 |
 | **2026-11-02** | 📄 **新增** OPPO 商城四件套：`oppo_store_daily.js`（签到 + 日常任务 + 活动任务 + 抽奖 v1.1）、`oppo_login.js`（账号密码登录 / 取 CK 核心）、`oppo_ck_panel.js` + `oppo_ck_panel.html`（短信登录取 CK 面板）<br>🔧 统一「项目名称 + 更新说明」头部标识，修正头部版本号与运行时横幅不一致 |
 | **2026-11-01** | 🔧 **中国联通** `unicom_signin.js` v1.3：补齐 token 失效自动续期链路<br>🔧 **中国联通** `unicom_auto_login.py`：验证码服务地址改为环境变量，移除硬编码<br>📦 **仓库整理**：全脚本补充「项目名称 + 更新说明」头部标识<br>🧹 **隐私清理**：清除脚本内的手机号、内网 IP、个人信息<br>🗂️ **结构清理**：移除废弃目录，README 重写并修正全部链接<br>📄 **新增** `unicom_auto_login.py` / `cap_solver.py`<br>📄 **新增** `chinaUnicom.py`（全功能 v1.0.5）+ `unicom_tasks.py`（全任务包装器），扩展任务链路打通 |
