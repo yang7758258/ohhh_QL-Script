@@ -380,7 +380,7 @@ unicom = 18500000000:密码1
 
 青龙只负责签到（纯 HTTP，无依赖），Windows 本机定时任务负责「token 续期 + 回写青龙」。
 
-1. 本机装好 Node 20 / Python 3.8+ / Chrome，然后在 `unicom_work` 目录执行：
+1. 本机装好 Node 20 / Python 3.8+ / Chrome，然后在**脚本所在目录**执行：
    ```powershell
    npm install playwright-core
    pip install requests pycryptodome pillow numpy
