@@ -4,6 +4,7 @@
  *  更新说明：
  *    2026-11-01  Mist  仓库整理：统一项目标识、清理隐私信息
  *    2026-11-03  Mist  设备指纹改为按账号派生，修复「设备登录过多」；UA 去掉真机型号
+ *    2026-11-07  Mist  v1.3 推送排版紧凑化（unicom_push_style）；补全接口与坑位说明
  * ---------------------------------------------------------------------------
  */
 /**
@@ -12,11 +13,113 @@
  * ============================================================================
  *
  *  作    者：Mist
- *  版    本：v1.2（新增：token 失效自动密码登录续期）
+ *  版    本：v1.3（新增：推送排版紧凑化；token 失效自动密码登录续期）
  *  适配版本：中国联通 iOS 13.1（com.chinaunicom.mobilebusiness）/ 签到区 H5 13.0100
  *
  * ----------------------------------------------------------------------------
- * 
+ *  【这条路是怎么走通的】
+ * ----------------------------------------------------------------------------
+ *  iOS 抓包（10973 条）→ 筛出 act.10010.com / activity.10010.com 两组签到接口
+ *  → 把抓包 Cookie 拆成 43 个逐个二分，测出「只靠 ecs_token 一个就够」
+ *  → 再用 ecs_token 单独跑通签到、任务、月签、余额、积分五条链路，逐条对账。
+ *
+ *  一、鉴权：只要一个 ecs_token
+ *      act.10010.com 与 activity.10010.com 这两个域**只认 ecs_token**。
+ *      我把抓包里的 43 个 Cookie 拆开做贪心最小集，结果是：
+ *        ecs_token 单独一项 → status 0000
+ *        其余 42 项任意组合（custId / u_account / c_mobile / numToken / TOKEN_UID*…）→ 0001
+ *      所以本脚本只发 ecs_token，不伪造任何设备指纹，被风控的概率最低。
+ *      ★ 坑一：m.client.10010.com（原生接口）**不**认 ecs_token，那套要 token_online。
+ *              签到区完全走 act/activity 两个域，不需要碰原生接口。
+ *
+ *  二、密码登录：可以全自动，已验证跑通
+ *      POST https://loginhl.10010.com/mobileService/login.htm
+ *        mobile   = RSA_PKCS1_v1_5(手机号 + 6位随机数字, PUB_KEY)
+ *        password = RSA_PKCS1_v1_5(明文密码 + 6位随机数字, PUB_KEY)
+ *        appId    = 118 位固定模板（dex 里是拼出来的，不是明文常量）
+ *        keyVersion=2 / deviceCode / deviceId / uniqueIdentifier …
+ *      实测返回码：
+ *        code 11       服务密码已停用，请用登录密码
+ *        code 2        请使用短信验证码登录进行身份验证（风控硬闸，与密码对错无关）
+ *        ECS99999      当前账号登录需要图形验证码校验 ← 正常态
+ *        type 10       跳到 img.client.10010.com/loginRisk（腾讯 TCaptcha 点选）
+ *
+ *      ★ 关键修正：validateTencentCaptcha 是**明文 JSON**，encrypt-key/scene-key
+ *        两个头虽然是空的也必须带上，不需要任何 AES/RSA 混合加密。
+ *
+ *      完整四步（全部实测通过，见 unicom_auto_login.py）：
+ *        ① login.htm                         → ECS99999 + mobile(640 hex) + type=10
+ *        ② 真实浏览器过腾讯点选验证码         → ticket + randstr
+ *        ③ POST /login-web/v1/chartCaptcha/validateTencentCaptcha
+ *           {"seq":"<uuid4>","captchaType":"10","mobile":"<640hex>",
+ *            "ticket":"...","randStr":"...","imei":"<deviceCode>"}
+ *                                            → resultToken
+ *        ④ login.htm + resultToken           → code=0 + ecs_token
+ *
+ *      ★ 为什么必须用浏览器：cap_union_new_verify 的 collect（tdc.js 设备指纹+
+ *        轨迹）、eks、pow_answer 都由腾讯 SDK 在页面里现算，纯 Python 补不出来。
+ *        但只要在 iframe 里用真实鼠标点对坐标，SDK 就会自己算好并提交。
+ *      ★ 验证码识别：背景图标用「严格阈值连通域 ∪ AntiCAP 检测」做候选池，
+ *        再「先旋转后归一化 + IoU 全排列最优分配」匹配提示条顺序。
+ *        形态学开运算可剔除穿过图标的草叶/棱边，实测两个样本 3/3 全中。
+ *      → 结论：**配 unicom_pwd 即可全自动续期**；没配则退回抓包拿 ecs_token。
+ *
+ *  三、签到接口
+ *      GET  activity.10010.com/sixPalaceGridTurntableLottery/signin/getContinuous
+ *             ?taskId=&channel=shouye&imei=<deviceCode>
+ *           → data.current[0].isSigned = y/n、data.continueCount = 连签天数
+ *      POST activity.10010.com/sixPalaceGridTurntableLottery/signin/daySign
+ *           body: shareCl=&shareCode=            ← 两个都必须存在，可以为空
+ *           → data.statusDesc「签到成功」、data.redSignMessage「+0.01元」
+ *           ★ 坑二：已签到时返回 code 0002「您今天已经签到啦」，
+ *                   这是幂等，不是错误，别当失败报。
+ *
+ *  四、任务中心（这才是大头，一天 6 个 × 0.01 元）
+ *      GET  …/task/taskList?type=2
+ *           → data.taskList[] + data.tagList[].taskDTOList[]
+ *      任务对象关键字段：
+ *           taskState  1=可做 3=已领 0=可领（抽奖类）
+ *           taskType   5=浏览类（能自动做完） 8=跳第三方 App（做不了） 3=抽奖
+ *           url        任务落地页，type=8 时是 "1"（占位）
+ *      GET  m.client.10010.com/taskcallback/topstories/gettaskip
+ *           body: mobile=<手机号>&orderId=<32位大写随机>
+ *           → 服务端记一次 IP 流水，返回 {code:0000, msg:<客户端IP>}
+ *      GET  …/task/completeTask?taskId=&orderId=&systemCode=QDQD
+ *      GET  …/task/getTaskReward?taskId=
+ *           → data.code 0000 + data.prizeNameRed「+0.01元」= 到账
+ *           → data.code 0329「任务失败」= 这类任务（抽奖）不走这条领奖路径，跳过即可
+ *      ★ 坑三：completeTask 对 type=8 直接回 0305「任务完成失败」，
+ *              但**仍会**在 getTaskReward 里回 0329，别把它当成功。
+ *      ★ 坑四：状态机必须自己去重。只按 taskState 循环会死循环
+ *              （type=3 的 taskState 永远停在 0），所以脚本记 attempted 集合。
+ *
+ *  五、月签有礼
+ *      GET  …/floor/getMonthSign
+ *           → data.taskList[]: taskStatus 1=可领 0=未达成 2=已领
+ *      GET  …/task/getTaskReward?taskId=&taskType=30&id=
+ *           ★ 坑五：这里必须带 taskType=30 和 id，只给 taskId 会领不到。
+ *
+ *  六、资产
+ *      POST act.10010.com/SigninApp/convert/getTelephone   → data.telephone（话费红包余额）
+ *      GET  …/signin/getIntegral                            → data.integralTotal（积分）
+ *      POST act.10010.com/SigninApp/convert/phoneDetails    → 红包流水（明细对账用）
+ *
+ *  七、失效特征
+ *      status/code 0000  正常
+ *      0001              未登录（ecs_token 过期）→ 重新抓包
+ *      0002              今天已签到（幂等）
+ *      0329              系统繁忙 / 任务失败（软失败，跳过）
+ *      0305              completeTask 不支持该任务类型
+ *
+ *  八、ecs_token 能活多久
+ *      实测：2026-10-25 20:16 拿到的 ecs_token，到 2026-10-26 21:44（25.5 小时）
+ *      仍然返回 status 0000，可以正常签到 → **有效期至少 25 小时，跨天无忧**。
+ *      同一份抓包里的 token_online 只有 5 分钟寿命（onLine.htm 立即回 code 1），
+ *      所以 token_online 是一次性票，ecs_token 才是长期票。
+ *      结论：每天 8:45 跑一次签到，token 完全撑得住；万一哪天失效，
+ *      配了 unicom_pwd 会自动过验证码续期，没配才需要手动重抓包。
+ *      抓包位置：App 随便点几下 → 抓包工具里找任意 act.10010.com 请求 →
+ *      复制 Cookie 里的 ecs_token= 后面那一段（很长，以 eyJ 开头）。
  *
  * ----------------------------------------------------------------------------
  *  【免责声明】
@@ -69,6 +172,7 @@ const ENV_ALL = 'unicom_all';           // on/off：全部扩展任务（默认 
 const ENV_ALL_SKIP = 'unicom_all_skip'; // 跳过指定模块，逗号分隔（enable_ 前缀可省）
 const ENV_ALL_SRC = 'unicom_all_src';   // chinaUnicom.py 路径（默认自动查找）
 const ENV_WOREAD = 'unicom_woread';     // on/off：联通阅读（默认 on）
+const ENV_PUSH_STYLE = 'unicom_push_style'; // simple(默认紧凑) / full(旧版明细)
 
 // ── 全部扩展任务（chinaUnicom.py 的 10 个模块）──────────────────────
 const ALL_WRAPPER = path.join(__dirname, '..', '附带脚本', 'unicom_tasks.py');
@@ -120,14 +224,16 @@ const API = {
     floatingDone: `${HOST_ACT}/SigninApp/floatingTask/accomplishFloatingTask`,
 };
 
-/** 与 App 完全一致的 UA（WebView 那套，带 unicom{version:...} 标记） */
-/** 设备号与系统版本：都从环境变量读，默认给一台中性机型，不写死任何人的真机 */
+/**
+ * 设备种子与系统版本：从环境变量读，默认中性机型，不写死任何人的真机。
+ * （设备型号 unicom_device_model 只影响密码登录，那是 unicom_auto_login.py 的事）
+ */
 const DEVICE_SEED = process.env.unicom_device_seed || 'mist-2026';
-const DEVICE_MODEL = process.env.unicom_device_model || 'iPhone14,5';
 const DEVICE_OS = process.env.unicom_device_os || '17.6.1';
 const UA_OS = DEVICE_OS.split('.').slice(0, 2).join('_');   // 真实 UA 是 17_6，不是 17_6_1
-const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS ' + UA_OS
-    + ' like Mac OS X) AppleWebKit/605.1.15 '
+
+/** 与 App 一致的 UA（WebView 那套，带 unicom{version:...} 标记） */
+const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS ' + UA_OS + ' like Mac OS X) AppleWebKit/605.1.15 '
     + '(KHTML, like Gecko)  unicom{version:iphone_c@13.0100};ltst;OSVersion/' + DEVICE_OS;
 
 /**
@@ -373,7 +479,6 @@ function autoLogin(mobile, password) {
         path.join(__dirname, 'unicom_auto_login.py'),
         path.join(__dirname, '..', '附带脚本', 'unicom_auto_login.py'),
         path.join('/ql/data/scripts', 'unicom_auto_login.py'),
-        'D:\\Desktop\\工作区\\unicom_work\\unicom_auto_login.py',
     );
     const script = cands.find((p) => { try { return fs.existsSync(p); } catch (e) { return false; } });
     if (!script) {
@@ -1239,8 +1344,7 @@ function findCmfSrc() {
     const cands = [
         process.env[ENV_CMF_SRC],
         path.join(__dirname, 'lt_cmf2026.py'),
-        path.join(__dirname, '..', '..', '下载', 'lt_cmf2026.py'),
-        'D:\\下载\\lt_cmf2026.py',
+        path.join(__dirname, '..', '..', 'lt_cmf2026.py'),
         '/ql/data/scripts/lt_cmf2026.py',
         '/ql/scripts/lt_cmf2026.py',
     ].filter(Boolean);
@@ -1489,11 +1593,122 @@ function runAllTasks(results, cache) {
     return out;
 }
 
+// ────────────────────────────────────────────────────────────────────────────
+// 推送排版
+//   unicom_push_style = simple（默认）→ 一个账号一行，扩展任务压成一行
+//   unicom_push_style = full          → 旧版逐条明细（排查时用）
+// ────────────────────────────────────────────────────────────────────────────
+
+/** 按显示宽度截断（中文算 2 格），超长补 … */
+function ellip(s, n) {
+    const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+    if (strWidth(t) <= n) return t;
+    let out = '';
+    let w = 0;
+    for (const ch of t) {
+        const cw = strWidth(ch);
+        if (w + cw > n - 2) break;
+        out += ch;
+        w += cw;
+    }
+    return out.replace(/[\s·,，、:：+\-]+$/g, '') + '…';
+}
+
+/** 子脚本日志洗成短标签：去时间戳 / 账号前缀 / 状态符号 / 尾部括号细节 */
+function cleanLog(s) {
+    return String(s || '')
+        .replace(/\u001b\[[0-9;]*m/g, '')
+        .replace(/^\[?\d{2}:\d{2}:\d{2}\]?\s*/, '')
+        .replace(/^账号\[\d+\]\s*/, '')
+        .replace(/^[✅❌⚠️🎁💰🔑🧩🧊📌🔔·\-\s]+/, '')
+        .replace(/[（(][^）)]*[）)]\s*$/, '')
+        .replace(/^(成功|完成)[:：]?\s*/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/** 推送里没信息量的行（注入 token / 余额播报 / 进度播报） */
+const LOG_NOISE = /(跳过 onLine|已注入 ecs_token|套餐详情|^\s*-\s|当前余额|实时话费|积分概览|运行后|今日已赚|[查询模式])/;
+
+const PUSH_BADGE = { ok: '✅', already: '💤', dead: '🔑', fail: '❌' };
+const NUM_CIRCLE = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
+
+const pad2 = (n) => String(n).padStart(2, '0');
+const stampOf = (d) => `${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+
+// ── 扩展任务日志 → 「来源 结果」短标签 ──────────────────────────────────
+/** 只留有信息量的行：中奖 / 领取 / 收益 */
+const LOG_KEEP = /(中奖|抽奖结果|获得|领取|抢兑|成功|立减金|话费券|元|积分)/;
+
+/** '联通祝福: [沃祝福]抽奖: 5元话费券[恭喜中奖]' → '联通祝福 5元话费券' */
+function pairOf(line) {
+    let t = cleanLog(line);
+    if (!t || LOG_NOISE.test(t) || !LOG_KEEP.test(t)) return '';
+    t = t.replace(/本次运行增加\s*/g, '+').replace(/\s*\+\s*/g, ' +');
+    const segs = t.split(/[:：]/).map((x) => x.trim()).filter(Boolean);
+    let src = '';
+    let res = t;
+    if (segs.length > 1) {
+        src = segs[0];
+        res = segs[segs.length - 1];
+    }
+    src = src.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim();
+    res = res.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim();
+    // 来源去模块前缀：'签到区-话费红包' → '话费红包'
+    if (src.includes('-')) src = src.split('-').pop().trim();
+    // 结果只有裸数字时补单位
+    if (/^\d+(\.\d+)?$/.test(res)) res += /积分/.test(t) ? '积分' : (/元/.test(t) ? '元' : '');
+    if (src === res) res = '';
+    const out = [ellip(src, 14), ellip(res, 15)].filter(Boolean).join(' ');
+    return out.length > 1 ? out : '';
+}
+
+// ── 扩展任务 / 云盘：各压成「小标题 + 每账号一行」──────────────────────
+function compactAllBlock(all) {
+    if (!all || !all.ok || !(all.accounts || []).length) return [];
+    const accs = all.accounts;
+    const okCnt = accs.filter((a) => a.login).length;
+    const rows = [];
+    for (const a of accs) {
+        const pairs = [];
+        for (const ln of (a.logs || [])) {
+            const x = pairOf(ln);
+            if (x && !pairs.includes(x)) pairs.push(x);
+            if (pairs.length >= 2) break;
+        }
+        const who = a.phone || `#${a.index}`;
+        const body = pairs.length ? pairs.join(' · ') : (a.login ? '完成' : '🔑未登录');
+        rows.push(`   ${who} · ${body}`);
+    }
+    if (!rows.length) return [];
+    return [`🧩 扩展任务 ${okCnt}/${accs.length}`, ...rows];
+}
+
+function compactCmfBlock(cmf) {
+    if (!cmf || !cmf.ok || !(cmf.accounts || []).length) return [];
+    const accs = (cmf.accounts || []).filter((a) => !a.ended);
+    if (!accs.length) return [];
+    const okCnt = accs.filter((a) => a.login).length;
+    const rows = accs.map((a) => {
+        if (!a.login) return `   ${a.phone} · 🔑未登录`;
+        const bits = [];
+        if (a.hangValue) bits.push(`挂机${a.hangValue}`);
+        if (a.hangRank) bits.push(`排名${a.hangRank}`);
+        const wins = (a.prizes || [])
+            .filter((x) => x && x.name && x.name !== '谢谢参与')
+            .map((x) => x.name);
+        if (wins.length) bits.push('🎁' + ellip(wins.join('/'), 14));
+        return `   ${a.phone} · ${bits.join(' · ') || '完成'}`;
+    });
+    return [`🧊 云盘 ${okCnt}/${accs.length}`, ...rows];
+}
+
+// ── 旧版明细（unicom_push_style=full 时使用，逻辑未改）──────────────────
 function buildCmfPushLines(cmf) {
     if (!cmf || !cmf.ok || !(cmf.accounts || []).length) return [];
     const accs = cmf.accounts;
     const endedCnt = accs.filter((a) => a.ended).length;
-    if (endedCnt === accs.length) return [];   // 活动结束就不占推送版面
+    if (endedCnt === accs.length) return [];
     const L = [];
     L.push('');
     L.push('🧊 乘风破浪2026（云盘）');
@@ -1533,7 +1748,7 @@ function buildAllPushLines(all) {
     return L;
 }
 
-function buildPushText(results, cmf, all) {
+function buildPushTextFull(results, cmf, all) {
     const ok = results.filter((r) => r.status === 'ok').length;
     const already = results.filter((r) => r.status === 'already').length;
     const dead = results.filter((r) => r.status === 'dead').length;
@@ -1542,49 +1757,32 @@ function buildPushText(results, cmf, all) {
     const totalGain = results.reduce(
         (s, r) => s + (r.signGain || 0) + (r.taskGain || 0) + (r.monthGain || 0), 0);
     const totalTasks = results.reduce((s, r) => s + (r.tasksDone || 0), 0);
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    const stamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} `
-        + `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const stamp = stampOf(new Date());
 
     const L = [];
     const sep = '────────────────────';
-
     L.push(stamp);
     L.push(sep);
 
     results.forEach((r, i) => {
-        const stat = {
-            ok: '签到成功',
-            already: '今日已签',
-            dead: '登录失败',
-            fail: '执行异常',
-        }[r.status] || '未知';
+        const stat = { ok: '签到成功', already: '今日已签', dead: '登录失败', fail: '执行异常' }[r.status] || '未知';
         const gain = (r.signGain || 0) + (r.taskGain || 0) + (r.monthGain || 0);
-
         L.push(`【${i + 1}】${maskMobile(r.mobile) || r.name}  ${stat}`);
-
         const sub = [];
         if (r.streak != null) sub.push(`连签 ${r.streak} 天`);
         if (r.tasksDone) sub.push(`任务 ${r.tasksDone} 个`);
         if (gain > 0) sub.push(`收益 +${money(gain)} 元`);
         if (sub.length) L.push('    ' + sub.join(' · '));
-
         const sub2 = [];
         if (r.coupon != null) sub2.push(`红包 ${money(r.coupon)} 元`);
         if (r.points != null) sub2.push(`积分 ${r.points}`);
         if (sub2.length) L.push('    ' + sub2.join(' · '));
-
-        if (r.msg && r.status !== 'ok' && r.status !== 'already') {
-            L.push(`    原因：${r.msg}`);
-        }
+        if (r.msg && r.status !== 'ok' && r.status !== 'already') L.push(`    原因：${r.msg}`);
         if (i < results.length - 1) L.push('');
     });
 
     L.push(sep);
-
-    const tail = [];
-    tail.push(`合计 +${money(totalGain)} 元`);
+    const tail = [`合计 +${money(totalGain)} 元`];
     if (totalTasks) tail.push(`任务 ${totalTasks} 个`);
     tail.push(`正常 ${normal}/${results.length}`);
     if (dead) tail.push(`失效 ${dead}`);
@@ -1596,6 +1794,62 @@ function buildPushText(results, cmf, all) {
 
     return {
         title: `中国联通 ${normal}/${results.length} 正常 · +${money(totalGain)}元`,
+        text: L.join('\n'),
+    };
+}
+
+// ── 主入口：默认走紧凑版 ────────────────────────────────────────────────
+function buildPushText(results, cmf, all, secs) {
+    const style = String(process.env[ENV_PUSH_STYLE] || 'simple').trim().toLowerCase();
+    if (style === 'full' || style === 'verbose') return buildPushTextFull(results, cmf, all);
+
+    const cnt = { ok: 0, already: 0, dead: 0, fail: 0 };
+    for (const r of results) if (cnt[r.status] !== undefined) cnt[r.status] += 1;
+    const normal = cnt.ok + cnt.already;
+    const totalGain = results.reduce(
+        (s, r) => s + (r.signGain || 0) + (r.taskGain || 0) + (r.monthGain || 0), 0);
+    const totalTasks = results.reduce((s, r) => s + (r.tasksDone || 0), 0);
+
+    const L = [];
+    L.push(`🛰 中国联通签到 · ${stampOf(new Date())}`);
+    L.push(`✅${cnt.ok} 成功 · 💤${cnt.already} 已签 · 🔑${cnt.dead} 失效 · ❌${cnt.fail} 异常`);
+    const acct = [`💰 +${money(totalGain)} 元`];
+    if (totalTasks) acct.push(`任务 ${totalTasks} 个`);
+    acct.push(`正常 ${normal}/${results.length}`);
+    if (secs) acct.push(`耗时 ${Math.round(secs)}s`);
+    L.push(acct.join(' · '));
+
+    const rows = [];
+    results.forEach((r, i) => {
+        const num = NUM_CIRCLE[i] || `${i + 1}.`;
+        const who = maskMobile(r.mobile) || r.name || `账号${i + 1}`;
+        const bits = [];
+        if (r.status === 'ok' || r.status === 'already') {
+            if (r.streak != null) bits.push(`连签${r.streak}天`);
+            if (r.tasksDone) bits.push(`任务${r.tasksDone}`);
+            const g = (r.signGain || 0) + (r.taskGain || 0) + (r.monthGain || 0);
+            if (g > 0) bits.push(`+${money(g)}元`);
+            if (r.coupon != null) bits.push(`红包${money(r.coupon)}`);
+            if (r.points != null) bits.push(`积分${r.points}`);
+        } else {
+            bits.push(ellip(r.msg || '未知原因', 28));
+        }
+        rows.push(`${num} ${who} ${PUSH_BADGE[r.status] || '·'} ${bits.join(' · ')}`.trim());
+    });
+    if (rows.length) {
+        L.push('');
+        for (const ln of rows) L.push(ln);
+    }
+
+    const extra = [...compactAllBlock(all), ...compactCmfBlock(cmf)];
+    if (extra.length) {
+        L.push('');
+        for (const ln of extra) L.push(ln);
+    }
+
+    const warn = cnt.dead + cnt.fail > 0 ? (normal === 0 ? ' · ❌需处理' : ' · ⚠️') : '';
+    return {
+        title: `联通签到 ${normal}/${results.length} · +${money(totalGain)}元${warn}`,
         text: L.join('\n'),
     };
 }
@@ -1642,13 +1896,13 @@ function httpCall(url, method = 'GET', body = null, headers = {}, timeout = 2000
     });
 }
 
-async function push(results, cmf, all) {
+async function push(results, cmf, all, secs) {
     const enabled = !/^(0|off|false|no|n)$/i.test(String(process.env[ENV_PUSH] || 'on').trim());
     const master = !/^(0|off|false|no|n)$/i.test(String(process.env[ENV_TY_PUSH] || 'on').trim());
     if (!enabled || !master) return;
     if (!results.length) return;
 
-    const { title, text } = buildPushText(results, cmf, all);
+    const { title, text } = buildPushText(results, cmf, all, secs);
 
     // ① 优先用青龙自带的 sendNotify.js
     const notifyPaths = [
@@ -1799,9 +2053,8 @@ async function main() {
 
     console.log('');
     console.log('  ' + line(58));
-    console.log(`   完成：✅ ${ok} 成功 · 🙋 ${already} 已签 · 🔑 ${dead} 失效 · ❌ ${fail} 失败`);
-    console.log(`   收益：+${money(totalGain)} 元话费红包`);
-    console.log(`   耗时：${secs}s`);
+    console.log(`   ✅${ok} 成功 · 💤${already} 已签 · 🔑${dead} 失效 · ❌${fail} 异常   正常 ${ok + already}/${results.length}`);
+    console.log(`   💰 +${money(totalGain)} 元话费红包 · 耗时 ${secs}s`);
     console.log('  ' + line(58));
 
     if (dead) {
@@ -1820,7 +2073,7 @@ async function main() {
         }
     }
 
-    await push(results, cmf, all);
+    await push(results, cmf, all, Number(secs));
     console.log('');
 }
 
