@@ -490,7 +490,6 @@ def find_node_root():
     cands = [
         here,
         os.path.join(here, "unicom_auto"),
-        os.path.join(here, "..", "unicom_work"),
         "/ql/data/scripts/unicom_auto",
         "/ql/data/scripts",
         "/ql/scripts",
