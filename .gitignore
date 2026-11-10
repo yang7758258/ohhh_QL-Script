@@ -1,0 +1,26 @@
+# ── 本机运行产物：含 token / 手机号 / 青龙密码，一律不进仓库 ──
+
+# 中国联通
+unicom_token_cache.json
+unicom_prize_cache.json
+.unicom_ck.json
+last_login_fail.json
+
+# 龙湖天街
+longhu_token.json
+longhu_dx_cache.json
+取Token-设置.json
+取Token-指纹.json
+
+# 雨云 / 其它脚本的会话缓存
+.ry_signin/
+*.session.json
+
+# 通用
+__pycache__/
+node_modules/
+*.log
+*.har
+curl.txt
+.DS_Store
+Thumbs.db
