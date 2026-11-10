@@ -16,22 +16,29 @@
 | 10 | OPPO 商城（取 CK 面板） | [oppo_ck_panel.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_ck_panel.js) | 见 [说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) | 手动运行 | ✅ |
 | 11 | OPPO 商城（登录核心） | [oppo_login.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_login.js) | `OPPO_CHROME` 等 | 被调用 | ✅ |
 | 12 | OPPO 商城（面板界面） | [oppo_ck_panel.html](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_ck_panel.html) | — | 被面板加载 | ✅ |
-| 13 | 顺丰速运+ | [sf_qinglong.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | `SfsyUrl` | `0 9 * * *` | ✅ |
-| 14 | 麦斯威尔福利社 | [mswefls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mswefls.js) | `mswefls` | `10 12 * * *` | ✅ |
-| 15 | Keep 奖牌 | [keep.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) | `Keep` | `10 12 * * *` | ✅ |
-| 16 | 顾家家居 | [gjjj.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | `gjjj` | `0 7,17 * * *` | ✅ |
-| 17 | 好奇车生活 | [hqcsh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) | `hqcsh` | `0 6,18 * * *` | ✅ |
-| 18 | 海天美味馆 | [htmwg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/htmwg.js) | `htmwg` | `0 9,18 * * *` | ✅ |
-| 19 | 健达福利社 | [jdfls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/jdfls.js) | `jdfls` | `10 11,12 * * *` | ✅ |
-| 20 | 富士 instax | [fsinstax.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) | `fsinstax` | `10 8 * * *` | ✅ |
-| 21 | 仰韶会员俱乐部 | [yshyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yshyjlb.js) | `yshyjlb` | `10 10,16 * * *` | ✅ |
-| 22 | 毛铺草本荟 | [mpcbh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mpcbh.js) | `mpcbh` | `30 8,18 * * *` | ✅ |
-| 23 | 雀巢会员俱乐部 | [qchyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/qchyjlb.js) | `qchyjlb` | `0 9 * * *` | ✅ |
-| 24 | 日清体验馆 | [rqtyg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rqtyg.js) | `rqtyg` | `30 6 * * *` | ✅ |
-| 25 | 爷爷不泡茶 | [yybpc.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yybpc.js) | `yybpc` | `10 8 * * *` | ✅ |
-| 26 | Zippo 芝宝 | [zippo.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | `zippo` | `0 0,7 * * *` | ✅ |
-| 27 | 推送模块 | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) | 见文件内注释 | 被调用 | 公共件 |
-| 28 | 远程通知 | [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | — | 被调用 | 公共件 |
+| 13 | 龙湖天街（签到） | [longhu_signin.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/longhu_signin.js) | `longhu_token` | `10 8 * * *` | ✅ |
+| 14 | 龙湖天街（指纹模块） | [longhu_dxrisk.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/longhu_dxrisk.js) | — | 被主脚本 require | ✅ |
+| 15 | 龙湖天街（取 Token 工具） | [龙湖取Token.exe](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/%E9%BE%99%E6%B9%96%E5%8F%96Token.exe) | — | 手动运行 | ✅ |
+| 16 | 龙湖天街（项目说明） | [README-龙湖天街签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%BE%99%E6%B9%96%E5%A4%A9%E8%A1%97%E7%AD%BE%E5%88%B0.md) | — | 文档 | ✅ |
+| 17 | 雨云（签到） | [rainyun_signin.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rainyun_signin.js) | `rainyun_account` | `10 0 * * *` | ✅ |
+| 18 | 雨云（验证码识别） | [rainyun_cap.py](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rainyun_cap.py) | — | 被主脚本调用 | ✅ |
+| 19 | 雨云（项目说明） | [README-雨云签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%9B%A8%E4%BA%91%E7%AD%BE%E5%88%B0.md) | — | 文档 | ✅ |
+| 20 | 顺丰速运+ | [sf_qinglong.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | `SfsyUrl` | `0 9 * * *` | ✅ |
+| 21 | 麦斯威尔福利社 | [mswefls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mswefls.js) | `mswefls` | `10 12 * * *` | ✅ |
+| 22 | Keep 奖牌 | [keep.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) | `Keep` | `10 12 * * *` | ✅ |
+| 23 | 顾家家居 | [gjjj.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | `gjjj` | `0 7,17 * * *` | ✅ |
+| 24 | 好奇车生活 | [hqcsh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) | `hqcsh` | `0 6,18 * * *` | ✅ |
+| 25 | 海天美味馆 | [htmwg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/htmwg.js) | `htmwg` | `0 9,18 * * *` | ✅ |
+| 26 | 健达福利社 | [jdfls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/jdfls.js) | `jdfls` | `10 11,12 * * *` | ✅ |
+| 27 | 富士 instax | [fsinstax.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) | `fsinstax` | `10 8 * * *` | ✅ |
+| 28 | 仰韶会员俱乐部 | [yshyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yshyjlb.js) | `yshyjlb` | `10 10,16 * * *` | ✅ |
+| 29 | 毛铺草本荟 | [mpcbh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mpcbh.js) | `mpcbh` | `30 8,18 * * *` | ✅ |
+| 30 | 雀巢会员俱乐部 | [qchyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/qchyjlb.js) | `qchyjlb` | `0 9 * * *` | ✅ |
+| 31 | 日清体验馆 | [rqtyg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rqtyg.js) | `rqtyg` | `30 6 * * *` | ✅ |
+| 32 | 爷爷不泡茶 | [yybpc.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yybpc.js) | `yybpc` | `10 8 * * *` | ✅ |
+| 33 | Zippo 芝宝 | [zippo.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | `zippo` | `0 0,7 * * *` | ✅ |
+| 34 | 推送模块 | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) | 见文件内注释 | 被调用 | 公共件 |
+| 35 | 远程通知 | [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | — | 被调用 | 公共件 |
 
 ---
 
@@ -170,6 +177,54 @@ node oppo_ck_panel.js --port 7788 --open
 > SHA256 `4deea086f241c4d38d37d916a758aae85f780313ce2fbe84ad47ccff40391cc6`
 > 完整说明：[README-OPPO取CK工具.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) · 全部 Release：[releases](https://github.com/yang7758258/ohhh_QL-Script/releases)
 
+### 龙湖天街 `longhu_signin.js`
+
+```bash
+export longhu_token="主号#a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6#pixel7"   # token，多账号换行
+export longhu_app="auto"            # APP 入口：auto 真签 / manual 只查 / off 关
+export longhu_push="on"             # on / off / dry（只打印不发）
+export longhu_push_style="simple"   # simple 紧凑一条 / full 每号一段（排错用）
+export longhu_delay="5-15"          # 多账号随机间隔（秒）
+```
+
+| 变量 | 必需 | 默认 | 说明 |
+| :--- | :---: | :--- | :--- |
+| `longhu_token` | ✅ | — | 三种写法：`token` / `备注#token` / `备注#token#机型`，多账号换行 |
+| `longhu_dx` | ⬜ | 空 | 真机 App 指纹，一般不用填（脚本自动签发） |
+| `longhu_dx_profile` | ⬜ | `pixel7` | pixel7 / xiaomi14 / oneplus12 / vivo_x100 / samsung_s24 |
+| `longhu_dx_fresh` | ⬜ | `off` | on = 丢缓存重签指纹（换机或被打风控后用） |
+| `longhu_app` | ⬜ | `auto` | APP 入口模式 |
+| `longhu_push` | ⬜ | `on` | 推送开关 |
+| `longhu_push_style` | ⬜ | `simple` | 推送版式 |
+| `longhu_delay` | ⬜ | `5-15` | 多账号间隔 |
+| `longhu_debug` | ⬜ | `off` | on 打印原始报文 |
+
+> token 有效期 30 天且滑动续期，拿一次就够。取 token 用 `龙湖取Token.exe`（手机号 + 短信验证码）
+> 或 `grab_longhu_token.js`（从 HAR / cURL 抠）。完整说明：[README-龙湖天街签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%BE%99%E6%B9%96%E5%A4%A9%E8%A1%97%E7%AD%BE%E5%88%B0.md)
+
+> ⚠️ 同目录的 `longhu_dx_cache.json` / `longhu_token.json` / `取Token-设置.json` / `取Token-指纹.json` 是本机运行产物，含 token、手机号、青龙密码，**不要提交不要外传**。
+
+### 雨云 `rainyun_signin.js`
+
+```bash
+export rainyun_account="手机号#密码"      # 多账号用 & 或换行
+export rainyun_push="1"                  # 填任意值即开启推送
+export rainyun_captcha="auto"            # auto / off（off 只跑免票通道）
+export rainyun_debug="1"                 # 1 打印识别细节 / force 已领取也强制提交
+```
+
+| 变量 | 必需 | 说明 |
+| :--- | :---: | :--- |
+| `rainyun_account` | ✅ | `手机号#密码`，多账号 `&` 或换行分隔 |
+| `rainyun_push` | ⬜ | 填任意值开启推送（走 `sendNotify.js`） |
+| `rainyun_captcha` | ⬜ | `auto`（默认）/ `off` |
+| `rainyun_debug` | ⬜ | `1` 识别细节 / `force` 强制重提交 |
+| `YZ_CHROME` | ⬜ | 浏览器路径，青龙已内置 |
+| `RY_PYTHON` | ⬜ | 指定 python3，默认自动探测 |
+
+> 三个文件（`rainyun_signin.js` + `rainyun_cap.py` + `sendNotify.js`）必须平铺在同一目录。
+> 命令要带 `task` 前缀（`task rainyun_signin.js`），否则 NODE_PATH 不带依赖缓存，require 会失败。
+> 完整说明：[README-雨云签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%9B%A8%E4%BA%91%E7%AD%BE%E5%88%B0.md)
 ### 顺丰速运+ `sf_qinglong.js`
 
 ```bash
@@ -191,6 +246,7 @@ export sf_tasks="off"                          # 跳过任务只签到
 
 | 日期 | 内容 |
 |:---|:---|
+| **2026-11-10** | 🏬 **新增龙湖天街**：`longhu_signin.js`（小程序 + APP 双入口签到、token 滑动续期 30 天、顶象设备指纹、紧凑推送）+ `longhu_dxrisk.js`（XXTEA 指纹签发模块）+ `龙湖取Token.exe`（手机号 + 验证码直接换 token，附 `TakeToken.cs` 源码可自行编译）<br>☁️ **新增雨云**：`rainyun_signin.js`（签到 +500 积分、腾讯点选验证码自动过、7 天会话复用）+ `rainyun_cap.py`（提示切分 + 候选检测 + 双通道打分）<br>📄 两份项目说明一并发布<br>🔒 隐私清理：取 Token 工具与抓包脚本不内置任何青龙地址/账号/密码，连接信息只从环境变量读；文档中的手机号、用户 ID、本机路径全部脱敏 |
 | **2026-11-07** | 📮 **中国联通** `unicom_signin.js` v1.3：推送新增**紧凑排版**（`unicom_push_style` = simple/full），一账号一行、扩展任务压一行，full 保留旧版逐条明细<br>📖 补全接口与坑位说明：鉴权最小集（43 → 1 个 cookie）、密码登录四步、失效码字典、token 寿命实测 25.5h<br>🧩 新增 `unicom_cmf.py` 云盘活动包装器（乘风破浪2026），复用 ecs_token 走二级缓存登录<br>📄 新增 [README-中国联通签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%B8%AD%E5%9B%BD%E8%81%94%E9%80%9A%E7%AD%BE%E5%88%B0.md) 完整说明<br>🔒 隐私清理：移除作者本机绝对路径，UA 系统版本改由环境变量控制 |
 | **2026-11-04** | 🎈 **OPPO 取 CK 工具 v1.2**：抓到凭据后**先校验再用**——逐个候选打会员信息接口，接口认了才收，失败会打印每个候选的原因（`code=5008` 过期 / `login=false` 登录没落稳 / `HTTP 403` 被拦）<br>🔧 **凭据优选** TOKENSID（约 30 天）＞ NEWOPPOSID（约 1 天）<br>🖥 面板显示校验结果：类型 / 账号名 / 积分 / 有效期<br>📄 新增 [README-OPPO取CK工具.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) 完整说明<br>📦 [v1.2 exe](https://github.com/yang7758258/ohhh_QL-Script/releases/tag/v1.2) 已发布 |
 | **2026-11-03** | 🐞 **中国联通** 修复「设备登录过多」：设备码改为按账号确定性派生（`unicom_auto_login.py` 去掉写死常量、`unicom_signin.js` 不再每次随机、`chinaUnicom.py` 的 uuid / sdkuuid / 云盘设备号统一派生），同一账号永远同一台设备<br>🔒 UA 去掉真机型号（iPhone17,1 / iOS 26.6.1），改为中性机型，可用 `unicom_device_model` / `unicom_device_os` / `unicom_device_seed` 覆盖 |
