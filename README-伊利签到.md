@@ -27,8 +27,6 @@ token 需要自己抓一次，见第二节。脚本本身零第三方依赖，�
    本地开发工具（未随仓库发布）：
     deploy_yili.py         一键部署到青龙（传脚本 + 配变量 + 建定时 + 试跑）
     ql.py                  青龙 API 小工具（deploy_yili.py 依赖）
-    grab_yili_ck.js        从 HAR / cURL 批量提取 token（作者自用，未随仓库发布）
-    wxapkg_unpack.js       小程序包解包（同上，排错用）
     REPORT-伊利逆向.md       协议、WAF 绕过、状态语义的验证过程
 
    ⚠️ 以下为本机运行产物，含登录凭据，切勿提交：
