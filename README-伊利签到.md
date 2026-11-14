@@ -11,7 +11,7 @@ yili_daily.js      主脚本（签到 + 抽奖 + 推送）
 sendNotify.js      推送模块（青龙自带同名文件时可跳过）
 ```
 
-**要取 token 再拿一个：**`grab_yili_ck.js`（从 HAR / cURL 抠 access-token）。
+token 需要自己抓一次，见第二节。脚本本身零第三方依赖，不需要额外模块。
 
 > 青龙部署：脚本管理新建 `yili_daily.js` → 环境变量 `yili_ck` → 定时任务 `task yili_daily.js` / `20 11 * * *`。
 
@@ -21,14 +21,14 @@ sendNotify.js      推送模块（青龙自带同名文件时可跳过）
 
    仓库里（平铺在根目录）：
     yili_daily.js          主脚本，上传青龙就跑这个
-    grab_yili_ck.js        从 HAR / cURL 提取 access-token
-    wxapkg_unpack.js       小程序包解包（V1MMWX + 1024 偏移 XOR 0x64）
     sendNotify.js          推送模块（青龙自带，本地需这份副本）
     README-伊利签到.md       本文档
 
    本地开发工具（未随仓库发布）：
     deploy_yili.py         一键部署到青龙（传脚本 + 配变量 + 建定时 + 试跑）
     ql.py                  青龙 API 小工具（deploy_yili.py 依赖）
+    grab_yili_ck.js        从 HAR / cURL 批量提取 token（作者自用，未随仓库发布）
+    wxapkg_unpack.js       小程序包解包（同上，排错用）
     REPORT-伊利逆向.md       协议、WAF 绕过、状态语义的验证过程
 
    ⚠️ 以下为本机运行产物，含登录凭据，切勿提交：
@@ -39,20 +39,25 @@ sendNotify.js      推送模块（青龙自带同名文件时可跳过）
 
 ## 二、取 access-token（唯一凭证）
 
-**方法 A：抓包文件直接提**（最省事）
+只有一步：**抓一次包，把请求头里的** `access-token` **复制下来。**
 
-    cd 脚本所在目录
-    node grab_yili_ck.js "D:\抓包\yili.har"
+1. PC 微信打开「活力伊利」小程序，随便点两下（产生请求即可，不用真做操作）；
+2. 抓包工具（Charles / Reqable / Fiddler / Stream）筛 `msmarket.msx.digitalyili.com`；
+3. 找任意一条 `/gateway/api` 请求，复制请求头里的 `access-token` 整串（约 108 字符 base64）。
 
-输出即 access-token（108 字符左右的 base64）。加 --write 可顺手写进 yili_token.json。
+拿到之后两种放法，任选：
 
-**方法 B：手工抓**
+```bash
+# ① 放青龙环境变量（推荐）
+yili_ck = 你的access-token
 
-1. PC 微信打开「活力伊利」小程序，随便点两下；
-2. 抓包工具（Charles / Reqable / Fiddler）找任意 msmarket.msx.digitalyili.com/gateway/api 请求；
-3. 复制请求头里的 **access-token** 整串。
+# ② 备注写法，备注会显示在推送里，方便多号区分
+yili_ck = 大号#你的access-token
+```
 
-> 有效期：数小时～数天，过期后脚本会报 🔑 token 失效，重抓即可。
+> 有效期：数小时～数天。过期表现是脚本报 🔑 token 失效（HTTP 401），重抓一次即可。
+>
+> access-token 是 80 字节密文，**里面没有可读的 exp**，服务端也不回过期时间 —— 算不出具体哪天过期，只能靠存活时长推测，见 3.2.1。
 
 ---
 
