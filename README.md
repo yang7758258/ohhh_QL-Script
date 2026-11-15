@@ -137,7 +137,10 @@ pip3 install requests pycryptodome
 
 ## 二、环境变量速查
 
-### 中国联通 `chinaUnicom.py`（全功能版）
+> 共 14 个条目，**点开对应项目**看完整变量表与示例。每一项后面是该脚本的必需变量名。
+
+<details>
+<summary><b>中国联通 chinaUnicom.py（全功能版）</b>  ·  <code>chinaUnicomCookie</code></summary>
 
 ```bash
 # 三选一，多账号用 & 或换行分隔
@@ -154,7 +157,10 @@ export UNICOM_TEST_MODE="query"               # 只查资产不跑任务
 
 覆盖模块：首页签到 / 联通祝福 / 天天领现金 / 权益超市 / 安全管家 / 联通云盘 / 联通阅读 / 联通爱听 / 沃云手机 / 区域专区。
 
-### 中国联通 `unicom_tasks.py`（全任务包装器）
+</details>
+
+<details>
+<summary><b>中国联通 unicom_tasks.py（全任务包装器）</b>  ·  无需配置 · 被主脚本调用</summary>
 
 不需要单独配置。`unicom_signin.js` 完成签到后会自动调用它，复用已拿到的 `ecs_token` 跳过登录链，跑 `chinaUnicom.py` 的 10 个模块。
 
@@ -166,7 +172,10 @@ export unicom_woread="off"       # 单独关闭阅读
 
 > 前提：`chinaUnicom.py`、`unicom_tasks.py`、`unicom_signin.js` 三个文件在同一目录。
 
-### 中国联通 `unicom_signin.js`
+</details>
+
+<details>
+<summary><b>中国联通 unicom_signin.js</b>  ·  <code>unicom</code></summary>
 
 ```bash
 export unicom="手机号:登录密码"                # 推荐，全自动
@@ -191,7 +200,10 @@ export unicom_device_os="17.6.1"
 > 完整说明（环境变量全表、推送样式、自动续期三种落地方式、常见问题）：
 > [README-中国联通签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%B8%AD%E5%9B%BD%E8%81%94%E9%80%9A%E7%AD%BE%E5%88%B0.md)
 
-### 中国南方航空 `csair_signin.js`
+</details>
+
+<details>
+<summary><b>中国南方航空 csair_signin.js</b>  ·  <code>CSAIR_CK</code> / <code>CSAIR_ACCOUNT</code></summary>
 
 ```bash
 export CSAIR_CK="cs1246643sso 的值"            # 通道A，多账号换行
@@ -202,7 +214,10 @@ export CSAIR_DELAY="6-15"                      # 多账号间隔秒
 export CSAIR_NOTIFY="0"                        # 关闭推送
 ```
 
-### OPPO 商城 `oppo_store_daily.js`
+</details>
+
+<details>
+<summary><b>OPPO 商城 oppo_store_daily.js</b>  ·  <code>oppo_account</code> / <code>oppo_ck</code></summary>
 
 ```bash
 # 二选一，也可以都配（oppo_account 优先，oppo_ck 作兜底）
@@ -234,7 +249,10 @@ export OPPO_SMS_FILE=""                  # 短信验证码文件（脚本轮询�
 
 > 三个文件要一起放：`oppo_store_daily.js` + `oppo_login.js` + `sendNotify.js`。
 
-### OPPO 商城取 CK 面板 `oppo_ck_panel.js`
+</details>
+
+<details>
+<summary><b>OPPO 商城取 CK 面板 oppo_ck_panel.js</b>  ·  无需配置 · 配套面板</summary>
 
 没有凭据时用它：输手机号 → 收短信 → 拿凭据 → **先校验可用** → 一键写进青龙 `oppo_ck`。
 
@@ -256,7 +274,10 @@ node oppo_ck_panel.js --port 7788 --open
 > SHA256 `4deea086f241c4d38d37d916a758aae85f780313ce2fbe84ad47ccff40391cc6`
 > 完整说明：[README-OPPO取CK工具.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md) · 全部 Release：[releases](https://github.com/yang7758258/ohhh_QL-Script/releases)
 
-### 龙湖天街 `longhu_signin.js`
+</details>
+
+<details>
+<summary><b>龙湖天街 longhu_signin.js</b>  ·  <code>longhu_token</code></summary>
 
 ```bash
 export longhu_token="主号#a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6#pixel7"   # token，多账号换行
@@ -283,7 +304,10 @@ export longhu_delay="5-15"          # 多账号随机间隔（秒）
 
 > ⚠️ 同目录的 `longhu_dx_cache.json` / `longhu_token.json` / `取Token-设置.json` / `取Token-指纹.json` 是本机运行产物，含 token、手机号、青龙密码，**不要提交不要外传**。
 
-### 雨云 `rainyun_signin.js`
+</details>
+
+<details>
+<summary><b>雨云 rainyun_signin.js</b>  ·  <code>rainyun_account</code></summary>
 
 ```bash
 export rainyun_account="手机号#密码"      # 多账号用 & 或换行
@@ -304,7 +328,11 @@ export rainyun_debug="1"                 # 1 打印识别细节 / force 已领�
 > 三个文件（`rainyun_signin.js` + `rainyun_cap.py` + `sendNotify.js`）必须平铺在同一目录。
 > 命令要带 `task` 前缀（`task rainyun_signin.js`），否则 NODE_PATH 不带依赖缓存，require 会失败。
 > 完整说明：[README-雨云签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%9B%A8%E4%BA%91%E7%AD%BE%E5%88%B0.md)
-### 活力伊利 `yili_daily.js`
+
+</details>
+
+<details>
+<summary><b>活力伊利 yili_daily.js</b>  ·  <code>yili_ck</code></summary>
 
 ```bash
 export yili_ck="大号#access-token"     # 必填，多账号换行或 & 分隔
@@ -330,7 +358,11 @@ export yili_delay="3-8"               # 多账号间隔秒数
 
 > 状态里有个 `⏳ 已提交待落库` —— 接口回 `status:true` 且有奖励明细，但状态/日历/积分三项都没变。
 > 这是如实上报，脚本不用 `status:true` 冒充签到成功。完整说明：[README-伊利签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%BC%8A%E5%88%A9%E7%AD%BE%E5%88%B0.md)
-### 小天鹅 `xiaotiane_daily.js`
+
+</details>
+
+<details>
+<summary><b>小天鹅 xiaotiane_daily.js</b>  ·  <code>XTE_UC_TOKEN</code></summary>
 
 ```bash
 export XTE_UC_TOKEN="64位hex"            # 主凭证，小程序 ucAccessToken
@@ -351,7 +383,10 @@ export XTE_PUSH="on"                      # on / off
 
 > 跑起来会往同目录写 `xte_state.json`（会话与任务状态），**含凭据，别提交**。
 
-### 名创优品 MINISO `miniso_signin.js`
+</details>
+
+<details>
+<summary><b>名创优品 MINISO miniso_signin.js</b>  ·  <code>MINISO_ACCOUNT</code></summary>
 
 ```bash
 export MINISO_ACCOUNT="skey#uid"          # 多账号 & 或换行分隔，也接受 JSON
@@ -365,7 +400,11 @@ export MINISO_PUSH="on"                   # on / off
 
 > 只有 `浏览类`（taskType=5）任务能无人值守完成；邀请好友、加群类需要人工，脚本会跳过。
 > 本地调试可跑 `node miniso_signin.js --dry` 只读巡检，不提交领奖。
-### 哈啰出行 `hellobike_welfare.js`
+
+</details>
+
+<details>
+<summary><b>哈啰出行 hellobike_welfare.js</b>  ·  <code>HELLOBIKE_ACCOUNT</code></summary>
 
 ```bash
 export HELLOBIKE_ACCOUNT="token#cityCode#adCode#备注"   # 多账号 & 或换行
@@ -389,7 +428,11 @@ export HELLOBIKE_PUSH="on"           # on / off
 > 只读自检三件套：`--check` 验登录态与到期、`--dry` 只读巡检不发领奖、`--preview` 打印推送原文不发通知。
 >
 > 激励视频走 `adx.ssp.show` → `adx.ssp.callback` 的 LOAD/SHOWED/COMPLETE 三段回调，奖励按回调发放，脚本会把三段都打完。
-### 顺丰速运+ `sf_qinglong.js`
+
+</details>
+
+<details>
+<summary><b>顺丰速运+ sf_qinglong.js</b>  ·  <code>SfsyUrl</code></summary>
 
 ```bash
 export SfsyUrl="suuid=xxx; sessionId=xxx; _login_mobile_=xxx"   # 必填
@@ -400,11 +443,16 @@ export sfkeep="1"                              # 保活模式
 export sf_tasks="off"                          # 跳过任务只签到
 ```
 
-### 其余微信小程序脚本
+</details>
+
+<details>
+<summary><b>其余微信小程序脚本</b>  ·  各脚本变量名见表格</summary>
 
 统一格式 `export <变量名>= <凭证>`，多账号换行或 `#` 分隔。变量名见上表，每个脚本头部注释里也写了抓包位置。
 
 ---
+
+</details>
 
 ## 三、更新说明
 
