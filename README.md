@@ -1,6 +1,80 @@
-### Script Overview · 喜欢请点个 🌟
+<div align="center">
 
-> 青龙面板自动化脚本合集 · 维护：[Mist](https://github.com/yang7758258)
+# 青龙脚本合集
+
+**面向青龙面板的签到 · 任务 · 抽奖自动化脚本库**
+
+微信小程序签到 · App 会员任务 · 积分与红包 · 多账号并发 · 推送通知 · 优先零第三方依赖
+
+[![Stars](https://img.shields.io/github/stars/yang7758258/ohhh_QL-Script?style=flat-square&logo=github&label=Stars)](https://github.com/yang7758258/ohhh_QL-Script)
+[![Forks](https://img.shields.io/github/forks/yang7758258/ohhh_QL-Script?style=flat-square&logo=github&label=Forks)](https://github.com/yang7758258/ohhh_QL-Script/fork)
+[![最近提交](https://img.shields.io/github/last-commit/yang7758258/ohhh_QL-Script?style=flat-square&label=最近提交)](https://github.com/yang7758258/ohhh_QL-Script/commits/main)
+[![仓库大小](https://img.shields.io/github/repo-size/yang7758258/ohhh_QL-Script?style=flat-square&label=仓库大小)](https://github.com/yang7758258/ohhh_QL-Script)
+[![收录](https://img.shields.io/badge/收录-39%20项-2ea44f?style=flat-square)](#全部脚本)
+[![运行环境](https://img.shields.io/badge/运行环境-青龙面板-2496ED?style=flat-square)](https://github.com/whyour/qinglong)
+
+[**快速开始**](#一快速开始青龙面板) · [**环境变量速查**](#二环境变量速查) · [**更新说明**](#三更新说明) · [**常见问题**](#四常见问题) · [**全部脚本**](#全部脚本) · [**问题反馈**](https://github.com/yang7758258/ohhh_QL-Script/issues)
+
+</div>
+
+> 脚本仅供个人学习与技术研究，仅用于自己有权操作的账号。所有凭据只在你自己的青龙里，仓库不收集任何账号信息。
+
+---
+
+## 按需求找脚本
+
+| 分类 | 项目 | 每天能拿到什么 |
+| :--- | :--- | :--- |
+| 🛰️ **运营商 · 出行** | [中国联通](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/unicom_signin.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%B8%AD%E5%9B%BD%E8%81%94%E9%80%9A%E7%AD%BE%E5%88%B0.md)）/ [南方航空](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/csair_signin.js) / [顺丰速运+](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | 话费红包、积分、里程与快递权益 |
+| 🛍️ **电商 · 商城** | [OPPO 商城](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/oppo_store_daily.js)（[取 CK 工具](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-OPPO%E5%8F%96CK%E5%B7%A5%E5%85%B7.md)）/ [名创优品 MINISO](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/miniso_signin.js) / [龙湖天街](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/longhu_signin.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%BE%99%E6%B9%96%E5%A4%A9%E8%A1%97%E7%AD%BE%E5%88%B0.md)） | mini 币、珑珠成长值、商城券与抽奖机会 |
+| 🍜 **食品 · 饮料** | [活力伊利](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yili_daily.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%BC%8A%E5%88%A9%E7%AD%BE%E5%88%B0.md)）/ [麦斯威尔](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mswefls.js) / [海天美味馆](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/htmwg.js) / [健达福利社](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/jdfls.js) / [雀巢](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/qchyjlb.js) / [日清体验馆](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rqtyg.js) / [爷爷不泡茶](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yybpc.js) / [仰韶](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yshyjlb.js) / [毛铺草本荟](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mpcbh.js) | 0 元抽奖、积分兑换、试饮试吃名额 |
+| 🏠 **家电 · 家居** | [小天鹅](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/xiaotiane_daily.js) / [顾家家居](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | 鹅仔养成与数字头像、家居积分 |
+| ☁️ **云服务** | [雨云](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rainyun_signin.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%9B%A8%E4%BA%91%E7%AD%BE%E5%88%B0.md)） | 每日签到 +500 积分与抽奖券 |
+| 🎫 **会员 · 权益** | [Keep 奖牌](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) / [好奇车生活](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) / [富士 instax](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) / [Zippo 芝宝](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | 奖牌、积分、抽奖与实物兑换 |
+| 🧰 **公共件** | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) / [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | 统一推送通道与远程通知 |
+
+> 点项目名直接下载脚本本体；带「说明」的直接跳完整文档（环境变量全表、取凭据方式、常见问题）。
+
+## 能做什么
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><b>✅ 签到与任务</b><br>每日签到、连续签到、浏览类任务、周期任务，状态机自己去重，已签自动跳过、重复跑不消耗次数</td>
+    <td width="50%" valign="top"><b>🎁 抽奖与兑换</b><br>0 元抽奖、翻牌、抢兑，按活动剩余次数自动跑，不空转</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>👥 多账号</b><br>换行或 &amp; 分隔，支持「备注#凭据」写法，备注直接成为推送里的账号名</td>
+    <td width="50%" valign="top"><b>🔄 凭据续期</b><br>能续的都续：token 滑动续期、会话缓存复用、失效前告警；不能续的会明确报失效让你重抓</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>🛡️ 风控与验证码</b><br>点选验证码自动识别、设备指纹按账号派生、WAF 路径归一化绕过；仍过不去的会如实报状态而不是假装成功</td>
+    <td width="50%" valign="top"><b>🔍 只读探针</b><br>多数脚本带 --check / --dry / 探针模式，先看状态不动账号，排错不浪费当天次数</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>📮 推送</b><br>统一走 sendNotify，企业微信 / 微信 / TG / PushPlus / Server酱等；推送文案按手机屏宽排版，一条看完</td>
+    <td width="50%" valign="top"><b>📦 依赖与隐私</b><br>优先零第三方依赖（纯 Node 内置模块）；仓库只放脚本，token、手机号、青龙地址一律不进库</td>
+  </tr>
+</table>
+
+## 三步跑起来
+
+```mermaid
+flowchart LR
+    A["① 拉库<br/>ql repo"] --> B["② 填环境变量<br/>脚本管理 → 环境变量"]
+    B --> C["③ 建定时任务<br/>task 脚本名"]
+    C --> D["脚本执行<br/>签到 · 任务 · 抽奖"]
+    D --> E["推送通知<br/>企微 / TG / PushPlus"]
+    D -.->|"失败或失效"| F["日志排查<br/>探针 / dry 模式"]
+
+    classDef brand fill:#e8f0fe,stroke:#1a73e8,color:#1f2328
+    class A,B,C brand
+```
+
+---
+
+## 全部脚本
+
+> 维护：[Mist](https://github.com/yang7758258) · 按 Ctrl+F 搜项目名或环境变量名
 
 | # | 项目名称 | 脚本文件 | 环境变量 | 建议定时 | 状态 |
 |:-:|:--------|:--------|:--------|:--------|:---:|
