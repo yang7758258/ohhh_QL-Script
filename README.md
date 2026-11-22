@@ -31,6 +31,7 @@
 | 🏠 **家电 · 家居** | [小天鹅](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/xiaotiane_daily.js) / [顾家家居](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | 鹅仔养成与数字头像、家居积分 |
 | ☁️ **云服务** | [雨云](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rainyun_signin.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E9%9B%A8%E4%BA%91%E7%AD%BE%E5%88%B0.md)） | 每日签到 +500 积分与抽奖券 |
 | 🎫 **会员 · 权益** | [Keep 奖牌](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) / [好奇车生活](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) / [富士 instax](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) / [Zippo 芝宝](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | 奖牌、积分、抽奖与实物兑换 |
+| 📱 **短视频 · 内容** | [快手极速版](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_nebula_daily.js)（[说明](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E5%BF%AB%E6%89%8B%E6%9E%81%E9%80%9F%E7%89%88.md)）/ [招财鸭](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_duck_signin.js) / [抓鸭子](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_catch_duck.js) / [看视频](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_ios_watch.js) | 金币、宝箱、招财鸭饲料、鸭鸭币 |
 | 🧰 **公共件** | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) / [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | 统一推送通道与远程通知 |
 
 > 点项目名直接下载脚本本体；带「说明」的直接跳完整文档（环境变量全表、取凭据方式、常见问题）。
@@ -102,22 +103,27 @@ flowchart LR
 | 22 | 小天鹅（鹅仔养成 / 数字头像） | [xiaotiane_daily.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/xiaotiane_daily.js) | `XTE_UC_TOKEN` | `20 9 * * *` | ✅ |
 | 23 | 名创优品 MINISO（任务中心） | [miniso_signin.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/miniso_signin.js) | `MINISO_ACCOUNT` | `15 9 * * *` | ✅ |
 | 24 | 哈啰出行（小程序福利中心） | [hellobike_welfare.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hellobike_welfare.js) | `HELLOBIKE_ACCOUNT` | `20 9 * * *` | ✅ |
-| 25 | 顺丰速运+ | [sf_qinglong.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | `SfsyUrl` | `0 9 * * *` | ✅ |
-| 26 | 麦斯威尔福利社 | [mswefls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mswefls.js) | `mswefls` | `10 12 * * *` | ✅ |
-| 27 | Keep 奖牌 | [keep.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) | `Keep` | `10 12 * * *` | ✅ |
-| 28 | 顾家家居 | [gjjj.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | `gjjj` | `0 7,17 * * *` | ✅ |
-| 29 | 好奇车生活 | [hqcsh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) | `hqcsh` | `0 6,18 * * *` | ✅ |
-| 30 | 海天美味馆 | [htmwg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/htmwg.js) | `htmwg` | `0 9,18 * * *` | ✅ |
-| 31 | 健达福利社 | [jdfls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/jdfls.js) | `jdfls` | `10 11,12 * * *` | ✅ |
-| 32 | 富士 instax | [fsinstax.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) | `fsinstax` | `10 8 * * *` | ✅ |
-| 33 | 仰韶会员俱乐部 | [yshyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yshyjlb.js) | `yshyjlb` | `10 10,16 * * *` | ✅ |
-| 34 | 毛铺草本荟 | [mpcbh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mpcbh.js) | `mpcbh` | `30 8,18 * * *` | ✅ |
-| 35 | 雀巢会员俱乐部 | [qchyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/qchyjlb.js) | `qchyjlb` | `0 9 * * *` | ✅ |
-| 36 | 日清体验馆 | [rqtyg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rqtyg.js) | `rqtyg` | `30 6 * * *` | ✅ |
-| 37 | 爷爷不泡茶 | [yybpc.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yybpc.js) | `yybpc` | `10 8 * * *` | ✅ |
-| 38 | Zippo 芝宝 | [zippo.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | `zippo` | `0 0,7 * * *` | ✅ |
-| 39 | 推送模块 | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) | 见文件内注释 | 被调用 | 公共件 |
-| 40 | 远程通知 | [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | — | 被调用 | 公共件 |
+| 25 | 快手极速版（主站金币） | [ks_nebula_daily.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_nebula_daily.js) | `ks_ck` | `5 8,12,18,21 * * *` | ✅ |
+| 26 | 快手极速版（招财鸭） | [ks_duck_signin.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_duck_signin.js) | `ks_ck` | `10 8,12,18,21 * * *` | ✅ |
+| 27 | 快手极速版（抓鸭子） | [ks_catch_duck.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_catch_duck.js) | `ks_ck` | `20 9,15,21 * * *` | ✅ |
+| 28 | 快手极速版（看视频） | [ks_ios_watch.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/ks_ios_watch.js) | `ks_gw` | `0 9,13,19,22 * * *` | ✅ |
+| 29 | 快手极速版（项目说明） | [README-快手极速版.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E5%BF%AB%E6%89%8B%E6%9E%81%E9%80%9F%E7%89%88.md) | — | 文档 | ✅ |
+| 30 | 顺丰速运+ | [sf_qinglong.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sf_qinglong.js) | `SfsyUrl` | `0 9 * * *` | ✅ |
+| 31 | 麦斯威尔福利社 | [mswefls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mswefls.js) | `mswefls` | `10 12 * * *` | ✅ |
+| 32 | Keep 奖牌 | [keep.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/keep.js) | `Keep` | `10 12 * * *` | ✅ |
+| 33 | 顾家家居 | [gjjj.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/gjjj.js) | `gjjj` | `0 7,17 * * *` | ✅ |
+| 34 | 好奇车生活 | [hqcsh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/hqcsh.js) | `hqcsh` | `0 6,18 * * *` | ✅ |
+| 35 | 海天美味馆 | [htmwg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/htmwg.js) | `htmwg` | `0 9,18 * * *` | ✅ |
+| 36 | 健达福利社 | [jdfls.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/jdfls.js) | `jdfls` | `10 11,12 * * *` | ✅ |
+| 37 | 富士 instax | [fsinstax.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/fsinstax.js) | `fsinstax` | `10 8 * * *` | ✅ |
+| 38 | 仰韶会员俱乐部 | [yshyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yshyjlb.js) | `yshyjlb` | `10 10,16 * * *` | ✅ |
+| 39 | 毛铺草本荟 | [mpcbh.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/mpcbh.js) | `mpcbh` | `30 8,18 * * *` | ✅ |
+| 40 | 雀巢会员俱乐部 | [qchyjlb.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/qchyjlb.js) | `qchyjlb` | `0 9 * * *` | ✅ |
+| 41 | 日清体验馆 | [rqtyg.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/rqtyg.js) | `rqtyg` | `30 6 * * *` | ✅ |
+| 42 | 爷爷不泡茶 | [yybpc.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/yybpc.js) | `yybpc` | `10 8 * * *` | ✅ |
+| 43 | Zippo 芝宝 | [zippo.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/zippo.js) | `zippo` | `0 0,7 * * *` | ✅ |
+| 44 | 推送模块 | [sendNotify.js](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/sendNotify.js) | 见文件内注释 | 被调用 | 公共件 |
+| 45 | 远程通知 | [Notice.json](https://raw.githubusercontent.com/yang7758258/ohhh_QL-Script/refs/heads/main/Notice.json) | — | 被调用 | 公共件 |
 
 ---
 
@@ -432,6 +438,35 @@ export HELLOBIKE_PUSH="on"           # on / off
 </details>
 
 <details>
+<summary><b>快手极速版 ks_nebula_daily.js</b>  ·  <code>ks_ck</code></summary>
+
+```bash
+export ks_ck="备注#完整Cookie"        # 必填，多账号换行
+export ks_box_wait="off"             # on = 宝箱冷却到了自动等并连开
+export ks_box_max="20"               # 单次最多开几个宝箱
+export ks_delay="5-15"               # 多账号间隔秒
+export ks_push="on"                  # on / off
+export ks_debug="off"                # on 打印原始响应体
+```
+
+| 变量 | 必需 | 默认 | 说明 |
+| :--- | :---: | :--- | :--- |
+| `ks_ck` | ✅ | — | Cookie 整串，多账号换行，支持 `备注#Cookie` |
+| `ks_box_wait` | ⬜ | `off` | on = 自动等冷却并连开（单次最长约 100 分钟） |
+| `ks_box_max` | ⬜ | `20` | 单次最多开几个宝箱 |
+| `ks_delay` | ⬜ | `5-15` | 多账号随机间隔 |
+| `ks_push` | ⬜ | `on` | 推送开关，另受 `TYpush=off` 影响 |
+| `ks_debug` | ⬜ | `off` | on 打印原始报文 |
+
+> 同项目还有三个脚本：`ks_duck_signin.js`（招财鸭，需 playwright）、`ks_catch_duck.js`（抓鸭子）、`ks_ios_watch.js`（看视频，需 `ks_gw` 网关）。
+>
+> **密码登录是死的** —— 服务端对正确/错误/不存在三种输入返回同一个码 `100110150`，是策略级拦截。只能走 Cookie，且 SSO 不公开续期，过期必须重抓。
+>
+> 完整说明（取 Cookie 姿势、kpn 坑、返回码对照、能力边界）：[README-快手极速版.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E5%BF%AB%E6%89%8B%E6%9E%81%E9%80%9F%E7%89%88.md)
+
+</details>
+
+<details>
 <summary><b>顺丰速运+ sf_qinglong.js</b>  ·  <code>SfsyUrl</code></summary>
 
 ```bash
@@ -458,6 +493,7 @@ export sf_tasks="off"                          # 跳过任务只签到
 
 | 日期 | 内容 |
 |:---|:---|
+| **2026-11-22** | 📱 **新增快手极速版四件套**：`ks_nebula_daily.js`（签到 + 开宝箱 + 任务卡领奖 + 51 任务上报，纯 HTTP 零依赖）、`ks_duck_signin.js`（招财鸭签到 / 喂食 / 领奖 / 饲料仓 / 饲料雨，Playwright 跑真实页面）、`ks_catch_duck.js`（抓鸭子 init → report 自动上报）、`ks_ios_watch.js`（看视频，网关驱动 App 真实播放）<br>📄 [README-快手极速版.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E5%BF%AB%E6%89%8B%E6%9E%81%E9%80%9F%E7%89%88.md) 含 kpn 坑、返回码对照与能力边界（诚实版）<br>🔒 隐私审查：移除作者内网 IP 与设备地址，四份脚本无手机号 / Cookie / 青龙凭据 |
 | **2026-11-15** | 🚲 **新增哈啰出行**：`hellobike_welfare.js`（福利中心签到 + 连签奖励金 20/40/60/80 积分、激励视频阶梯 12/10/10/7、看视频抵扣、积分与奖励金结算播报）<br>🔒 隐私审查：抓包定位改为环境变量可覆盖 + 中性默认，移除地市名 |
 | **2026-11-15** | 🦢 **新增小天鹅**：`xiaotiane_daily.js`（鹅仔签到 / 鹅仔日常任务 / 鹅仔工作 / 喂青草 / 数字头像任务，账号密码登录走美的 UC 统一认证，Bearer 10 天滚动续期）<br>🛍 **新增名创优品 MINISO**：`miniso_signin.js`（签到领 mini币 / 周期任务自动浏览并领奖 / 当日 mini币结算播报）<br>🔒 隐私审查：两份脚本均无手机号、token、内网地址与本机路径<br>🧹 脚本内只保留代码注释与作者声明，不含使用说明等额外文档 |
 | **2026-11-14** | 🥛 **新增活力伊利**：`yili_daily.js`（每日签到 + 0 元抽奖 + 积分回显，签到状态/签到/日历三路交叉确认，403/WAF 两档绕过，推送按 iPhone 气泡 34 列排版）<br>🔑 取 token 只需抓一次包，从请求头复制 `access-token`，无需额外工具<br>📄 [README-伊利签到.md](https://github.com/yang7758258/ohhh_QL-Script/blob/main/README-%E4%BC%8A%E5%88%A9%E7%AD%BE%E5%88%B0.md) 含 ck 寿命推算与状态语义说明<br>🔒 隐私清理：取 ck 工具不内置青龙地址/账号/密码，连接信息只从环境变量读；文档手机号与本机路径全部脱敏 |
